@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="PlantTest_3" size="0.050000 0.048926" />
+    <ImageTarget name="PlantTest2" size="0.200000 0.180000" />
+    <ImageTarget name="T14_GC03R" size="0.055000 0.053902" />
+    <ImageTarget name="synchronization" size="210.000000 143.760330" />
+    <ImageTarget name="REV_W11B" size="0.020000 0.042704" />
+  </Tracking>
+</QCARConfig>
