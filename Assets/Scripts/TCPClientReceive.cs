@@ -130,7 +130,7 @@ public class TCPClientReceive : MonoBehaviour
                     if (plantSetWant != null)
                     {
                         plantSetWant.transform.localPosition = ps.pos;
-                        plantSetWant.transform.localRotation = ps.rotate;
+                        plantSetWant.transform.localEulerAngles = ps.rotate;
                     }
                     else if (plantSetWant == null)
                     {

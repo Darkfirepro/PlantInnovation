@@ -92,7 +92,7 @@ MonoBehaviour:
   UIWhole: {fileID: 2551330274075916723, guid: ebdec1ce93c21b24da7bfddcfebd5d5c, type: 3}
   row: 4
   height: 5
-  gap: 0.08
+  gap: 0.07
   plantVar1: Height
   plantVar2: Seeds number
   plantVar3: Spike number

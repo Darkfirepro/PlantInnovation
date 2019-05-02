@@ -24,13 +24,13 @@ public class GenerateUI : MonoBehaviour
             newPlantUI = Instantiate(UIContainerAnchor, GameObject.Find("RefernceSceneBuilder").transform, false);
             newPlantUI.name = plantName;
             newPlantUI.transform.position = transform.position;
-            newPlantUI.transform.rotation = transform.rotation;
+            newPlantUI.transform.eulerAngles = transform.eulerAngles;
             PutName(plantName);
         }
         else
         {
             GameObject.Find(plantName).transform.position = transform.position;
-            GameObject.Find(plantName).transform.rotation = transform.rotation;
+            GameObject.Find(plantName).transform.eulerAngles = transform.eulerAngles;
         }
     }
 
@@ -45,7 +45,6 @@ public class GenerateUI : MonoBehaviour
             for (int n = 0; n < col.Count; n++)
             {
                 location.Add(col[n] + row[i].ToString());
-                print(col[n] + row[i].ToString());
             }
         }
         foreach (Transform uiWhole in UIContainer)

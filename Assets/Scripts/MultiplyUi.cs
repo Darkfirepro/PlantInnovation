@@ -30,12 +30,17 @@ public class MultiplyUi : MonoBehaviour
         referenceScene.AddComponent<WorldAnchor>();
     }
 
-    public void GeneratePlantAnchor(string pname, Vector3 pos, Quaternion rotate)
+    public void ShutDownGame()
+    {
+        Application.Quit();
+    }
+
+    public void GeneratePlantAnchor(string pname, Vector3 pos, Vector3 rotate)
     {
         GameObject newPlantUI = Instantiate(planUiAnchor, GameObject.Find("RefernceSceneBuilder").transform, false);
         newPlantUI.name = pname;
         newPlantUI.transform.localPosition = pos;
-        newPlantUI.transform.localRotation = rotate;
+        newPlantUI.transform.localEulerAngles = rotate;
         //put each name of each plant:
         Transform UIContainer = newPlantUI.transform.GetChild(0);
         int p_number = 1;

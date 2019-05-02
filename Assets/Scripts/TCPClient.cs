@@ -36,7 +36,7 @@ public class TCPClient : MonoBehaviour
             pObject = new PlantSet
             {
                 Name = name,
-                rotate = transform.localRotation,
+                rotate = transform.localEulerAngles,
                 pos = transform.localPosition,
                 header = "ps"
             };

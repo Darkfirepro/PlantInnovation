@@ -606,7 +606,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 12
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -1011,6 +1011,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6d40233ece58c4ba92a59bdf4780c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugMessage: {fileID: 0}
 --- !u!23 &2717579376545600399
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1330,6 +1331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6d40233ece58c4ba92a59bdf4780c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugMessage: {fileID: 0}
 --- !u!23 &8088762183341899686
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1651,7 +1653,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Parameter2
+  m_Text: Seeds number
 --- !u!1 &2551330273334700960
 GameObject:
   m_ObjectHideFlags: 0
@@ -2112,7 +2114,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Parameter1
+  m_Text: Height
 --- !u!1 &2551330273649311420
 GameObject:
   m_ObjectHideFlags: 0
@@ -2491,7 +2493,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2551330274075916723}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df4822dfaee9edd45bf2c879b6355581, type: 3}
   m_Name: 
@@ -2817,6 +2819,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6d40233ece58c4ba92a59bdf4780c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugMessage: {fileID: 0}
 --- !u!23 &6505870508565928660
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3226,7 +3229,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Parameter3
+  m_Text: Spike number
 --- !u!1 &3362545677527101593
 GameObject:
   m_ObjectHideFlags: 0

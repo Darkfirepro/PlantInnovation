@@ -10,7 +10,7 @@ using UnityEngine;
 public class PlantSet
 {
     public string Name;
-    public Quaternion rotate;
+    public Vector3 rotate;
     public Vector3 pos;
     public string header;
 }
