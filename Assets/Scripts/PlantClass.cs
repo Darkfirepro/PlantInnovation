@@ -26,4 +26,12 @@ public class SingPlant
     public string header;
 }
 
+[Serializable]
+public class WorldAnchorTrans
+{
+    public string header;
+    public string spaceName;
+    public byte[] data;
+}
+
 

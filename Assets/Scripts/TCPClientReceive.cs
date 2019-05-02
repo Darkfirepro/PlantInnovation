@@ -24,8 +24,9 @@ public class TCPClientReceive : MonoBehaviour
     private object oldObject;
     private bool recOrNot = false;
     public MultiplyUi mpUI;
+    public bool transSwitch = false;
 
-    void InitSocket()
+    public void InitSocket()
     {
         ip = IPAddress.Parse("45.32.190.167");
         ipEnd = new IPEndPoint(ip, 6666);
@@ -105,7 +106,7 @@ public class TCPClientReceive : MonoBehaviour
     {
         oldObject = objClient;
         mpUI = GameObject.FindGameObjectWithTag("SceneManager").GetComponent<MultiplyUi>();
-        InitSocket();
+        //InitSocket();
     }
 
     void Update()
