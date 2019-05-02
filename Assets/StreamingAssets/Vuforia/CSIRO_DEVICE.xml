@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
-    <ImageTarget name="T08_GC35L" size="0.060000 0.059569" />
-    <ImageTarget name="T07_GC35L" size="0.060000 0.059220" />
-    <ImageTarget name="T06_GC35R" size="0.060000 0.059441" />
-    <ImageTarget name="T05_GC35L" size="0.060000 0.058404" />
-    <ImageTarget name="T04_GC35L" size="0.060000 0.058315" />
-    <ImageTarget name="T03_GC35L" size="0.060000 0.060192" />
-    <ImageTarget name="T01_GC35L" size="0.060000 0.058897" />
-    <ImageTarget name="T14_GC03R" size="0.055000 0.053902" />
+    <ImageTarget name="14_GC03R" size="0.055000 0.053902" />
+    <ImageTarget name="1_GC35L" size="0.060000 0.058897" />
+    <ImageTarget name="3_GC35L" size="0.060000 0.060192" />
+    <ImageTarget name="4_GC35L" size="0.060000 0.058315" />
+    <ImageTarget name="5_GC35L" size="0.060000 0.058404" />
+    <ImageTarget name="6_GC35R" size="0.060000 0.059441" />
+    <ImageTarget name="7_GC35L" size="0.060000 0.059220" />
+    <ImageTarget name="8_GC35L" size="0.060000 0.059569" />
     <ImageTarget name="synchronization" size="210.000000 143.760330" />
   </Tracking>
 </QCARConfig>

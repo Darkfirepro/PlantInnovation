@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class MultipleSet : MonoBehaviour
 {
-    private GameObject UIWhole;
+    public GameObject UIWhole;
     public int row = 5;
     public int height = 4;
     public float gap = 0.08f;
@@ -20,31 +20,23 @@ public class MultipleSet : MonoBehaviour
     void Awake()
     {
         //set defualt names of the plant parameters:
-        transform.GetChild(0).GetChild(0).GetChild(1).GetChild(1).GetComponent<Text>().text = plantVar1;
-        transform.GetChild(0).GetChild(0).GetChild(2).GetChild(1).GetComponent<Text>().text = plantVar2;
-        transform.GetChild(0).GetChild(0).GetChild(3).GetChild(1).GetComponent<Text>().text = plantVar3;
-        UIWhole = transform.GetChild(0).gameObject;
+        UIWhole.transform.GetChild(0).GetChild(1).GetChild(1).GetComponent<Text>().text = plantVar1;
+        UIWhole.transform.GetChild(0).GetChild(2).GetChild(1).GetComponent<Text>().text = plantVar2;
+        UIWhole.transform.GetChild(0).GetChild(3).GetChild(1).GetComponent<Text>().text = plantVar3;
+        int count = 1;
         for (int heightNum = 0; heightNum < height; heightNum++)
         {
             for (int num = 0; num < row; num++)
             {
-                if (num < (row - 2) && heightNum == 0)
+                if (count < row * height)
                 {
                     GameObject uiWholeD = Instantiate(UIWhole, transform, false);
-                    newV.x = UIWhole.transform.localPosition.x + (num + 1) * gap;
+                    newV.x = UIWhole.transform.localPosition.x + num * gap - gap * row;
                     newV.y = UIWhole.transform.localPosition.y;
-                    newV.z = UIWhole.transform.localPosition.z;
+                    newV.z = UIWhole.transform.localPosition.z + heightNum * gap - gap * height;
                     uiWholeD.transform.localPosition = newV;
                     uiWholeD.transform.GetChild(0).gameObject.SetActive(false);
-                }
-                else if (heightNum > 0)
-                {
-                    GameObject uiWholeD = Instantiate(UIWhole, transform, false);
-                    newV.x = UIWhole.transform.localPosition.x + num * gap;
-                    newV.y = UIWhole.transform.localPosition.y;
-                    newV.z = UIWhole.transform.localPosition.z + heightNum * gap;
-                    uiWholeD.transform.localPosition = newV;
-                    uiWholeD.transform.GetChild(0).gameObject.SetActive(false);
+                    count++;
                 }
             }
         }
