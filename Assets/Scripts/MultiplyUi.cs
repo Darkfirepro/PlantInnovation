@@ -8,6 +8,7 @@ public class MultiplyUi : MonoBehaviour
 {
     public GameObject taskPanel;
     GameObject referenceScene;
+    public GameObject imgSet;
     public GameObject planUiAnchor;
     public List<string> col;
     public List<int> row;
@@ -19,6 +20,7 @@ public class MultiplyUi : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //imgSet.SetActive(false);
         taskPanel.SetActive(false);
         col = new List<string> { "A", "B", "C", "D" };
         row = new List<int> { 1, 2, 3, 4, 5 };

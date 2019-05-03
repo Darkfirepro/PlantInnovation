@@ -67,6 +67,14 @@ public class TCPClientReceive : MonoBehaviour
         serverSocket.SendTo(sendData, sendData.Length, SocketFlags.None, ipEnd);
     }
 
+    public void SendWorlAnchor(WorldAnchorTrans w)
+    {
+        sendData = new byte[1024*1000*7];
+        string senDataJson = JsonUtility.ToJson(w);
+        sendData = Encoding.UTF8.GetBytes(senDataJson);
+        serverSocket.SendTo(sendData, sendData.Length, SocketFlags.None, ipEnd);
+    }
+
     void SocketReceive()
     {
         SocketConnet();

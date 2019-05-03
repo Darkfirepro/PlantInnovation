@@ -13,9 +13,12 @@ public class WorldAnchorOperation : MonoBehaviour
     private GameObject ParentAnchor;
     private byte[] exportedData;
     private List<byte> e;
-    private string spaceName;
+    private string spaceId;
     public TCPClientReceive tCP;
     public GameObject indicator;
+    public GameObject imgSet;
+
+
     public void PressAndGenerate()
     {
         if (Choice == Selection.CreateNew)
@@ -23,9 +26,10 @@ public class WorldAnchorOperation : MonoBehaviour
             ParentAnchor = GameObject.Find("RefernceSceneBuilder");
             WorldAnchor wa = ParentAnchor.AddComponent<WorldAnchor>();
             WorldAnchorTransferBatch watb = new WorldAnchorTransferBatch();
-            spaceName = GameObject.FindGameObjectWithTag("SpaceNameObject").GetComponent<ImageTargetBehaviour>().TrackableName;
-            watb.AddWorldAnchor(spaceName, wa);
+            spaceId = GameObject.FindGameObjectWithTag("SpaceNameObject").GetComponent<ImageTargetBehaviour>().TrackableName;
+            watb.AddWorldAnchor(spaceId, wa);
             tCP.InitSocket();
+            imgSet.SetActive(true);
             exportedData = new byte[0];
             e = new List<byte>();
             indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
@@ -43,10 +47,10 @@ public class WorldAnchorOperation : MonoBehaviour
                         WorldAnchorTrans wat = new WorldAnchorTrans
                         {
                             header = "World Anchor",
-                            spaceName = spaceName,
+                            spaceName = spaceId,
                             data = e.ToArray()
                         };
-                        tCP.objClient = wat;
+                        tCP.SendWorlAnchor(wat);
                         indicator.GetComponent<MeshRenderer>().material.color = Color.green;
                     }
                     else
@@ -73,4 +77,5 @@ public class WorldAnchorOperation : MonoBehaviour
     {
         
     }
+
 }
