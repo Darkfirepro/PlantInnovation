@@ -15,6 +15,7 @@ TagManager:
   - SceneManager
   - SpaceNameObject
   - ImgRecSet
+  - AssistantTips
   layers:
   - Default
   - TransparentFX

@@ -8,6 +8,7 @@ using System.Threading;
 using System;
 using SimpleJSON;
 using UnityEngine.UI;
+using Newtonsoft.Json;
 
 public class TCPClientReceive : MonoBehaviour
 {
@@ -48,7 +49,7 @@ public class TCPClientReceive : MonoBehaviour
         recOrNot = true;
     }
 
-    void SocketSend(string sendStr)
+    public void SocketSend(string sendStr)
     {
 
         sendData = new byte[1024];
@@ -96,7 +97,7 @@ public class TCPClientReceive : MonoBehaviour
 
     void SocketQuit()
     {
-        //SocketSend("ClientShutDown");
+        
         if (connectThread != null)
         {
             connectThread.Interrupt();
@@ -106,6 +107,7 @@ public class TCPClientReceive : MonoBehaviour
         if (serverSocket != null)
             serverSocket.Close();
         recvStr = "";
+        SocketSend("ClientShutDown");
         print("disconnect");
     }
 
@@ -114,7 +116,7 @@ public class TCPClientReceive : MonoBehaviour
     {
         oldObject = objClient;
         mpUI = GameObject.FindGameObjectWithTag("SceneManager").GetComponent<MultiplyUi>();
-        //InitSocket();
+        InitSocket();
     }
 
     void Update()
@@ -128,13 +130,13 @@ public class TCPClientReceive : MonoBehaviour
             }
             if (recOrNot)
             {
-                
                 recOrNot = false;
                 JSONNode jData = JSON.Parse(recvStr);
                 string header = jData["header"];
                 if (header == "ps")
                 {
                     PlantSet ps = JsonUtility.FromJson<PlantSet>(recvStr);
+                    //print(ps.Name + ps.pos + ps.rotate);
                     GameObject plantSetWant = GameObject.Find(ps.Name);
                     if (plantSetWant != null)
                     {

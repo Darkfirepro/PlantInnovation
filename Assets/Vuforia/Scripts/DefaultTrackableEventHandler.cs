@@ -69,7 +69,7 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
             }
             else
             {
-                transform.GetChild(0).GetComponent<GenerateUI>().StartLocatingPant(GetComponent<ImageTargetBehaviour>().TrackableName);
+                //transform.GetChild(0).GetComponent<GenerateUI>().StartLocatingPant(GetComponent<ImageTargetBehaviour>().TrackableName);
             }
         }
         else if (previousStatus == TrackableBehaviour.Status.TRACKED &&

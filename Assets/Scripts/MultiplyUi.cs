@@ -53,7 +53,6 @@ public class MultiplyUi : MonoBehaviour
             for (int n = 0; n < col.Count; n++)
             {
                 location.Add(col[n] + row[i].ToString());
-                print(col[n] + row[i].ToString());
             }
         }
         foreach (Transform uiWhole in UIContainer)

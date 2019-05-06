@@ -6887,6 +6887,7 @@ GameObject:
   - component: {fileID: 8676856555591021480}
   - component: {fileID: 2524820975259224400}
   - component: {fileID: 7823175153811977875}
+  - component: {fileID: 8508166263860773945}
   m_Layer: 0
   m_Name: StartSycnButton
   m_TagString: Untagged
@@ -7213,6 +7214,22 @@ MonoBehaviour:
   touchableSurface: 0
   bounds: {x: 0.032, y: 0.032}
   touchableCollider: {fileID: 8163272708008980443}
+--- !u!114 &8508166263860773945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5831459131138878865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a14922c9dda3b2140a703bbc582c1c38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Choice: 1
+  tCP: {fileID: 0}
+  indicator: {fileID: 0}
+  imgSet: {fileID: 0}
 --- !u!1 &5872489606089931267
 GameObject:
   m_ObjectHideFlags: 0
@@ -8458,7 +8475,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1607195213669492369}
   - component: {fileID: 6938184504574739386}
-  - component: {fileID: 5185927803758631674}
   - component: {fileID: 343621833927060187}
   - component: {fileID: 8014174655733862125}
   - component: {fileID: 5783536327727815620}
@@ -8502,20 +8518,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.032, y: 0.032, z: 0.016}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5185927803758631674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6752548076850945357}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24fc55fb6e739774e9adc6cfcac882f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Choice: 0
-  syncStart: {fileID: 8994956944788981101}
 --- !u!114 &343621833927060187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8675,7 +8677,7 @@ MonoBehaviour:
   OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5185927803758631674}
+      - m_Target: {fileID: 0}
         m_MethodName: PressButton
         m_Mode: 1
         m_Arguments:
@@ -11128,6 +11130,7 @@ MonoBehaviour:
   Choice: 0
   tCP: {fileID: 0}
   indicator: {fileID: 2529117110160301966}
+  imgSet: {fileID: 0}
 --- !u!1 &8278198508468157166
 GameObject:
   m_ObjectHideFlags: 0

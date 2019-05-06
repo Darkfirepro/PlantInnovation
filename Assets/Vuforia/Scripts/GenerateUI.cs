@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Vuforia;
 
 public class GenerateUI : MonoBehaviour
 {
@@ -10,14 +11,16 @@ public class GenerateUI : MonoBehaviour
     private GameObject newPlantUI;
     public List<string> col;
     public List<int> row;
+    private string plantName;
 
     public void Start()
     {
         col = new List<string> { "A", "B", "C", "D" };
         row = new List<int> { 1, 2, 3, 4, 5 };
+        plantName = transform.parent.GetComponent<ImageTargetBehaviour>().TrackableName;
     }
 
-    public void StartLocatingPant(string plantName)
+    public void StartLocatingPant()
     {
         if (GameObject.Find(plantName) == null)
         {

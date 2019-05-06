@@ -7,7 +7,7 @@ public class InputKeyboard : MonoBehaviour
 {
     public TouchScreenKeyboard keyboard;
     string inputWant;
-    public TextMesh debugMessage;
+    //public TextMesh debugMessage;
 
     // Start is called before the first frame update
     void Start()
@@ -25,11 +25,11 @@ public class InputKeyboard : MonoBehaviour
             // Do stuff with keyboardText
             if (TouchScreenKeyboard.visible)
             {
-                debugMessage.text = "typing... " + keyboard.text;
+                //debugMessage.text = "typing... " + keyboard.text;
             }
             else
             {
-                debugMessage.text = "typed " + keyboard.text;
+                //debugMessage.text = "typed " + keyboard.text;
                 keyboard = null;
             }
         }

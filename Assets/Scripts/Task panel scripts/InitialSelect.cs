@@ -1,27 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Vuforia;
 
 public class InitialSelect : MonoBehaviour
 {
-
-    public enum Selection { Sync, MainTool, PlantView };
-    public Selection Choice;
     public GameObject syncStart;
     // Start is called before the first frame update
 
-    public void PressButton()
+    public void ShowSync()
     {
-        if (Choice == Selection.Sync)
-        {
-            syncStart.SetActive(true);
-            transform.parent.gameObject.SetActive(false);
-        }
+        syncStart.SetActive(true);
+        gameObject.SetActive(false);
+    }
+
+    public void CloseSyncStart()
+    {
+        gameObject.SetActive(true);
+        syncStart.SetActive(false);
     }
 
     void Start()
     {
-        
+        GameObject userTips = GameObject.FindGameObjectWithTag("AssistantTips");
+        string spaceName = GameObject.FindGameObjectWithTag("SpaceNameObject").GetComponent<ImageTargetBehaviour>().TrackableName;
+        string tips = "Welcome to: " + spaceName + "\nPlease synchronizing you system first";
+        userTips.GetComponent<TMPro.TextMeshPro>().text = tips;
     }
 
     // Update is called once per frame
