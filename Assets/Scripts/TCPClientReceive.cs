@@ -9,6 +9,7 @@ using System;
 using SimpleJSON;
 using UnityEngine.UI;
 using Newtonsoft.Json;
+using UnityEngine.XR.WSA;
 
 public class TCPClientReceive : MonoBehaviour
 {
@@ -82,6 +83,7 @@ public class TCPClientReceive : MonoBehaviour
 
         while (true)
         {
+            
             recvData = new byte[1024];
             recvLen = serverSocket.Receive(recvData);
             if (recvLen == 0)
@@ -138,15 +140,7 @@ public class TCPClientReceive : MonoBehaviour
                     PlantSet ps = JsonUtility.FromJson<PlantSet>(recvStr);
                     //print(ps.Name + ps.pos + ps.rotate);
                     GameObject plantSetWant = GameObject.Find(ps.Name);
-                    if (plantSetWant != null)
-                    {
-                        plantSetWant.transform.localPosition = ps.pos;
-                        plantSetWant.transform.localEulerAngles = ps.rotate;
-                    }
-                    else if (plantSetWant == null)
-                    {
-                        mpUI.GeneratePlantAnchor(ps.Name, ps.pos, ps.rotate);
-                    }
+                    mpUI.GeneratePlantAnchor(ps.Name, ps.pos, ps.rotate, true);
                 }
 
                 else if (header == "pds")
@@ -154,6 +148,7 @@ public class TCPClientReceive : MonoBehaviour
                     SingPlant spR = JsonUtility.FromJson<SingPlant>(recvStr);
                     print(spR.singName + "|" + spR.singId.ToString());
                     GameObject singlePlant = GameObject.Find(spR.singName + "|" + spR.singId.ToString());
+                    singlePlant.transform.GetChild(0).gameObject.SetActive(true);
                     singlePlant.transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<InputField>().text = spR.param1;
                     singlePlant.transform.GetChild(0).GetChild(2).GetChild(0).GetComponent<InputField>().text = spR.param2;
                     singlePlant.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<InputField>().text = spR.param3;

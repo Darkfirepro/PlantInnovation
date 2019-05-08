@@ -17,6 +17,8 @@ using Vuforia;
 /// </summary>
 public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandler
 {
+    public GameObject taskBoard;
+
     #region PROTECTED_MEMBER_VARIABLES
 
     protected TrackableBehaviour mTrackableBehaviour;
@@ -63,9 +65,10 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
             OnTrackingFound();
             if (gameObject.name == "LauchPanel")
             {
-                GameObject.Find("RefernceSceneBuilder").transform.position = transform.GetChild(0).position;
-                GameObject.Find("RefernceSceneBuilder").transform.rotation = transform.GetChild(0).rotation;
-                GameObject.Find("RefernceSceneBuilder").transform.GetChild(0).gameObject.SetActive(true);
+                taskBoard.transform.position = transform.GetChild(0).position;
+                taskBoard.transform.rotation = transform.GetChild(0).rotation;
+                taskBoard.SetActive(true);
+                //GameObject.Find("RefernceSceneBuilder").transform.GetChild(0).gameObject.SetActive(true);
             }
             else
             {
