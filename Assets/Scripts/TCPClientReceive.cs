@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -18,11 +17,12 @@ public class TCPClientReceive : MonoBehaviour
     IPEndPoint ipEnd;
     string recvStr;
     string sendStr;
+    string[] listRecvStr;
     byte[] recvData = new byte[1024];
     byte[] sendData = new byte[1024];
     int recvLen; 
     Thread connectThread;
-    public object objClient;
+    //public object objClient;
     private object oldObject;
     private bool recOrNot = false;
     public MultiplyUi mpUI;
@@ -48,6 +48,11 @@ public class TCPClientReceive : MonoBehaviour
         print(recvLen);
         recvStr = Encoding.UTF8.GetString(recvData, 0, recvLen);
         recOrNot = true;
+        print(recvStr);
+        if (recvStr.IndexOf("<EOF>") == -1)
+        {
+            listRecvStr = recvStr.Split(new string[] { "[<EOF>]" }, System.StringSplitOptions.None);
+        }
     }
 
     public void SocketSend(string sendStr)
@@ -60,7 +65,7 @@ public class TCPClientReceive : MonoBehaviour
         serverSocket.SendTo(sendData, sendData.Length, SocketFlags.None, ipEnd);
     }
 
-    void SocketSendByte(object obj)
+    public void SocketSendByte(object obj)
     {
         sendData = new byte[1024];
         string senDataJson = JsonUtility.ToJson(obj);
@@ -92,7 +97,13 @@ public class TCPClientReceive : MonoBehaviour
                 continue;
             }
             recvStr = Encoding.UTF8.GetString(recvData, 0, recvLen);
+            print(recvStr);
             recOrNot = true;
+            Debug.Log("The index of this string is: " + recvStr.IndexOf("<EOF>").ToString());
+            if (recvStr.IndexOf("<EOF>") == -1)
+            {
+                listRecvStr = recvStr.Split(new string[] { "[<EOF>]" }, System.StringSplitOptions.None);
+            }
             print(recvStr);
         }
     }
@@ -116,7 +127,7 @@ public class TCPClientReceive : MonoBehaviour
 
     void Start()
     {
-        oldObject = objClient;
+        //oldObject = objClient;
         mpUI = GameObject.FindGameObjectWithTag("SceneManager").GetComponent<MultiplyUi>();
         InitSocket();
     }
@@ -125,34 +136,38 @@ public class TCPClientReceive : MonoBehaviour
     {
         try
         {
-            if (oldObject != objClient)
-            {
-                SocketSendByte(objClient);
-                oldObject = objClient;
-            }
+            //if (oldObject != objClient)
+            //{
+            //    SocketSendByte(objClient);
+            //    oldObject = objClient;
+            //}
             if (recOrNot)
             {
-                recOrNot = false;
-                JSONNode jData = JSON.Parse(recvStr);
-                string header = jData["header"];
-                if (header == "ps")
+                foreach (string recvFinal in listRecvStr)
                 {
-                    PlantSet ps = JsonUtility.FromJson<PlantSet>(recvStr);
-                    //print(ps.Name + ps.pos + ps.rotate);
-                    GameObject plantSetWant = GameObject.Find(ps.Name);
-                    mpUI.GeneratePlantAnchor(ps.Name, ps.pos, ps.rotate, true);
+                    recOrNot = false;
+                    JSONNode jData = JSON.Parse(recvFinal);
+                    string header = jData["header"];
+                    if (header == "ps")
+                    {
+                        PlantSet ps = JsonUtility.FromJson<PlantSet>(recvFinal);
+                        //print(ps.Name + ps.pos + ps.rotate);
+                        GameObject plantSetWant = GameObject.Find(ps.Name);
+                        mpUI.GeneratePlantAnchor(ps.Name, ps.pos, ps.rotate, true);
+                    }
+
+                    else if (header == "pds")
+                    {
+                        SingPlant spR = JsonUtility.FromJson<SingPlant>(recvFinal);
+                        print(spR.singName + "|" + spR.singId.ToString());
+                        GameObject singlePlant = GameObject.Find(spR.singName + "|" + spR.singId.ToString());
+                        singlePlant.transform.GetChild(0).gameObject.SetActive(true);
+                        singlePlant.transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<InputField>().text = spR.param1;
+                        singlePlant.transform.GetChild(0).GetChild(2).GetChild(0).GetComponent<InputField>().text = spR.param2;
+                        singlePlant.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<InputField>().text = spR.param3;
+                    }
                 }
 
-                else if (header == "pds")
-                {
-                    SingPlant spR = JsonUtility.FromJson<SingPlant>(recvStr);
-                    print(spR.singName + "|" + spR.singId.ToString());
-                    GameObject singlePlant = GameObject.Find(spR.singName + "|" + spR.singId.ToString());
-                    singlePlant.transform.GetChild(0).gameObject.SetActive(true);
-                    singlePlant.transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<InputField>().text = spR.param1;
-                    singlePlant.transform.GetChild(0).GetChild(2).GetChild(0).GetComponent<InputField>().text = spR.param2;
-                    singlePlant.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<InputField>().text = spR.param3;
-                }
             }
         }
         catch (Exception e)

@@ -19,6 +19,7 @@ public class GenerateUI : MonoBehaviour
     public void StartLocatingPant()
     {
         mpUI.GeneratePlantAnchor(plantName, transform.position, transform.eulerAngles, false);
+        //mpUI.GeneratePlantAnchor(plantName, transform.position, transform.eulerAngles, false);
 
     }
 

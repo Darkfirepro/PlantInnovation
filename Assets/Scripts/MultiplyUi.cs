@@ -43,7 +43,7 @@ public class MultiplyUi : MonoBehaviour
         {
             GameObject existPlantUI = GameObject.Find(pname);
             //delete world anchor:
-            Destroy(existPlantUI.GetComponent<WorldAnchor>());
+            //Destroy(existPlantUI.GetComponent<WorldAnchor>());
             if (localOrNot == false)
             {
                 existPlantUI.transform.position = pos;
@@ -55,7 +55,7 @@ public class MultiplyUi : MonoBehaviour
                 existPlantUI.transform.localEulerAngles = rotate;
             }
             //add world anchor:
-            existPlantUI.AddComponent<WorldAnchor>();
+            //existPlantUI.AddComponent<WorldAnchor>();
         }
         else
         {
@@ -76,7 +76,7 @@ public class MultiplyUi : MonoBehaviour
             newPlantUI.transform.localPosition = pos;
             newPlantUI.transform.localEulerAngles = rotate;
             //add world anchor:
-            newPlantUI.AddComponent<WorldAnchor>();
+            //newPlantUI.AddComponent<WorldAnchor>();
             //put each name of each plant:
             Transform UIContainer = newPlantUI.transform.GetChild(0);
             int p_number = 1;

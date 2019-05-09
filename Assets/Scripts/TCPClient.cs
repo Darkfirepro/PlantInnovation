@@ -40,8 +40,8 @@ public class TCPClient : MonoBehaviour
                 pos = transform.localPosition,
                 header = "ps"
             };
-            tCP.objClient = pObject;
-            //SocketSendByte(pObject);
+            //tCP.objClient = pObject;
+            tCP.SocketSendByte(pObject);
         }
         else if (clientChoice == Client.SinglePlantDetails)
         {
@@ -54,8 +54,8 @@ public class TCPClient : MonoBehaviour
                 param3 = transform.parent.GetChild(3).GetChild(0).GetComponent<InputField>().text,
                 header = "pds"
             };
-            tCP.objClient = pObject;
-            //SocketSendByte(pObject);
+            //tCP.objClient = pObject;
+            tCP.SocketSendByte(pObject);
 
         }
 

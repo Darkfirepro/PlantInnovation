@@ -65,41 +65,42 @@ public class WorldAnchorOperation : MonoBehaviour
             exportedData = new byte[0];
             e = new List<byte>();
             indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
-            WorldAnchorTransferBatch.ExportAsync(watb,
-            (data) =>
-            {
-                e.AddRange(data);
-                exportedData = data;
-            },
-                (reason) =>
-                {
+            syncOrNot = true;
+            //WorldAnchorTransferBatch.ExportAsync(watb,
+            //(data) =>
+            //{
+            //    e.AddRange(data);
+            //    exportedData = data;
+            //},
+            //    (reason) =>
+            //    {
 
-                    if (reason == SerializationCompletionReason.Succeeded)
-                    {
-                        //WorldAnchorTrans wat = new WorldAnchorTrans
-                        //{
-                        //    header = "wa",
-                        //    spaceName = spaceId,
-                        //    data = e.ToArray()
-                        //};
-                        //tCP.SendWorlAnchor(wat);
-                        CreateNewAnchorInManager();
-                        indicator.GetComponent<MeshRenderer>().material.color = Color.green;
-                        syncOrNot = true;
-                    }
-                    else
-                    {
-                        print("failed to upload world anchor, please try agagin");
-                        indicator.GetComponent<MeshRenderer>().material.color = Color.red;
-                    }
-                });
+            //        if (reason == SerializationCompletionReason.Succeeded)
+            //        {
+            //            //WorldAnchorTrans wat = new WorldAnchorTrans
+            //            //{
+            //            //    header = "wa",
+            //            //    spaceName = spaceId,
+            //            //    data = e.ToArray()
+            //            //};
+            //            //tCP.SendWorlAnchor(wat);
+            //            CreateNewAnchorInManager();
+            //            indicator.GetComponent<MeshRenderer>().material.color = Color.green;
+            //            syncOrNot = true;
+            //        }
+            //        else
+            //        {
+            //            print("failed to upload world anchor, please try agagin");
+            //            indicator.GetComponent<MeshRenderer>().material.color = Color.red;
+            //        }
+            //    });
         }
         else if (Choice == Selection.SycnDirectly)
         {
             //tCP.InitSocket();
             indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
             //anchorData = DownloadAnchorData(spaceId);
-            TextAsset asset = Resources.Load("data_anchor") as TextAsset;
+            TextAsset asset = Resources.Load("data_demonstration") as TextAsset;
             anchorData = asset.bytes;
             ImportWorldAnchor(anchorData);
         }

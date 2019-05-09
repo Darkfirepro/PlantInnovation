@@ -6,6 +6,7 @@ using Vuforia;
 public class InitialSelect : MonoBehaviour
 {
     public GameObject syncStart;
+    public GameObject mainToolStart;
     // Start is called before the first frame update
 
     public void ShowSync()
@@ -18,6 +19,18 @@ public class InitialSelect : MonoBehaviour
     {
         gameObject.SetActive(true);
         syncStart.SetActive(false);
+    }
+
+    public void ShowMainTool()
+    {
+        mainToolStart.SetActive(true);
+        gameObject.SetActive(false);
+    }
+
+    public void CloseMainTool()
+    {
+        gameObject.SetActive(true);
+        mainToolStart.SetActive(false);
     }
 
     void Start()
