@@ -49,9 +49,9 @@ public class TCPClientReceive : MonoBehaviour
         recvStr = Encoding.UTF8.GetString(recvData, 0, recvLen);
         recOrNot = true;
         print(recvStr);
-        if (recvStr.IndexOf("<EOF>") == -1)
+        if (recvStr.Substring(recvStr.Length-5, 5) == "<EOF>")
         {
-            listRecvStr = recvStr.Split(new string[] { "[<EOF>]" }, System.StringSplitOptions.None);
+            listRecvStr = recvStr.Split(new string[] { "<EOF>" }, System.StringSplitOptions.None);
         }
     }
 
@@ -99,12 +99,10 @@ public class TCPClientReceive : MonoBehaviour
             recvStr = Encoding.UTF8.GetString(recvData, 0, recvLen);
             print(recvStr);
             recOrNot = true;
-            Debug.Log("The index of this string is: " + recvStr.IndexOf("<EOF>").ToString());
-            if (recvStr.IndexOf("<EOF>") == -1)
+            if (recvStr.Substring(recvStr.Length - 5, 5) == "<EOF>")
             {
-                listRecvStr = recvStr.Split(new string[] { "[<EOF>]" }, System.StringSplitOptions.None);
+                listRecvStr = recvStr.Split(new string[] { "<EOF>" }, System.StringSplitOptions.None);
             }
-            print(recvStr);
         }
     }
 
@@ -145,6 +143,7 @@ public class TCPClientReceive : MonoBehaviour
             {
                 foreach (string recvFinal in listRecvStr)
                 {
+                    print(recvFinal);
                     recOrNot = false;
                     JSONNode jData = JSON.Parse(recvFinal);
                     string header = jData["header"];

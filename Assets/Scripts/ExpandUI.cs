@@ -5,11 +5,9 @@ using UnityEngine.UI;
 
 public class ExpandUI : MonoBehaviour {
 
-    public GameObject ToggleSet;
-
     public void ShowUiInfor()
     {
-        if (ToggleSet.GetComponent<Toggle>().isOn == false)
+        if (gameObject.activeSelf == true)
         {
             this.gameObject.SetActive(false);
         }

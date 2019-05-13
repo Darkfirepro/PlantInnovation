@@ -73,8 +73,6 @@ public class MultiplyUi : MonoBehaviour
                 newPlantUI.transform.localPosition = pos;
                 newPlantUI.transform.localEulerAngles = rotate;
             }
-            newPlantUI.transform.localPosition = pos;
-            newPlantUI.transform.localEulerAngles = rotate;
             //add world anchor:
             //newPlantUI.AddComponent<WorldAnchor>();
             //put each name of each plant:

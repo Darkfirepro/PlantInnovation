@@ -56,6 +56,7 @@ public class TCPClient : MonoBehaviour
             };
             //tCP.objClient = pObject;
             tCP.SocketSendByte(pObject);
+            transform.parent.gameObject.SetActive(false);
 
         }
 
