@@ -6,9 +6,10 @@ public class TCPClient : MonoBehaviour
     public enum Client { PlantSet, SinglePlantDetails };
     public Client clientChoice;
 
-    private Vector3 oldPos;
+    private Vector3 oldPos = Vector3.zero;
     private object pObject;
     public TCPClientReceive tCP;
+    private bool UIexist = false;
 
 
     // Use this for initialization
@@ -22,9 +23,9 @@ public class TCPClient : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (clientChoice == Client.PlantSet && oldPos != transform.localPosition)
+        if (clientChoice == Client.PlantSet && oldPos != transform.localPosition && UIexist == true)
         {
-            GeneratePlansetSend();
+            //GeneratePlansetSend();
             oldPos = transform.localPosition;
         }
     }
@@ -41,7 +42,10 @@ public class TCPClient : MonoBehaviour
                 header = "ps"
             };
             //tCP.objClient = pObject;
+
             tCP.SocketSendByte(pObject);
+
+            //tCP.SendMessage(JsonUtility.ToJson(pObject));
         }
         else if (clientChoice == Client.SinglePlantDetails)
         {
@@ -55,7 +59,11 @@ public class TCPClient : MonoBehaviour
                 header = "pds"
             };
             //tCP.objClient = pObject;
+
             tCP.SocketSendByte(pObject);
+
+            //tCP.SendMessage(JsonUtility.ToJson(pObject));
+
             transform.parent.gameObject.SetActive(false);
 
         }

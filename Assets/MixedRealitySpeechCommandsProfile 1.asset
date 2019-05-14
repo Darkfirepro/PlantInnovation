@@ -38,9 +38,16 @@ MonoBehaviour:
       description: Grip Press
       axisConstraint: 3
   - localizationKey: 
-    keyword: Button
+    keyword: OK
     keyCode: 0
     action:
       id: 1
+      description: Select
+      axisConstraint: 2
+  - localizationKey: 
+    keyword: follow
+    keyCode: 0
+    action:
+      id: 0
       description: Select
       axisConstraint: 2

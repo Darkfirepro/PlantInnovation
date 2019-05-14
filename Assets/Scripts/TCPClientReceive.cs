@@ -12,15 +12,15 @@ using UnityEngine.XR.WSA;
 
 public class TCPClientReceive : MonoBehaviour
 {
-    Socket serverSocket; 
-    IPAddress ip; 
+    Socket serverSocket;
+    IPAddress ip;
     IPEndPoint ipEnd;
     string recvStr;
     string sendStr;
     string[] listRecvStr;
     byte[] recvData = new byte[1024];
     byte[] sendData = new byte[1024];
-    int recvLen; 
+    int recvLen;
     Thread connectThread;
     //public object objClient;
     private object oldObject;
@@ -42,17 +42,14 @@ public class TCPClientReceive : MonoBehaviour
         if (serverSocket != null)
             serverSocket.Close();
         serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        print("ready to connect");
+        //print("ready to connect");
         serverSocket.Connect(ipEnd);
+
         recvLen = serverSocket.Receive(recvData);
         print(recvLen);
         recvStr = Encoding.UTF8.GetString(recvData, 0, recvLen);
-        recOrNot = true;
-        print(recvStr);
-        if (recvStr.Substring(recvStr.Length-5, 5) == "<EOF>")
-        {
-            listRecvStr = recvStr.Split(new string[] { "<EOF>" }, System.StringSplitOptions.None);
-        }
+
+        OperatingRecStr();
     }
 
     public void SocketSend(string sendStr)
@@ -76,7 +73,7 @@ public class TCPClientReceive : MonoBehaviour
 
     public void SendWorlAnchor(WorldAnchorTrans w)
     {
-        sendData = new byte[1024*1000*7];
+        sendData = new byte[1024 * 1000 * 7];
         string senDataJson = JsonUtility.ToJson(w);
         sendData = Encoding.UTF8.GetBytes(senDataJson);
         serverSocket.SendTo(sendData, sendData.Length, SocketFlags.None, ipEnd);
@@ -88,7 +85,6 @@ public class TCPClientReceive : MonoBehaviour
 
         while (true)
         {
-            
             recvData = new byte[1024];
             recvLen = serverSocket.Receive(recvData);
             if (recvLen == 0)
@@ -97,18 +93,24 @@ public class TCPClientReceive : MonoBehaviour
                 continue;
             }
             recvStr = Encoding.UTF8.GetString(recvData, 0, recvLen);
-            print(recvStr);
-            recOrNot = true;
-            if (recvStr.Substring(recvStr.Length - 5, 5) == "<EOF>")
-            {
-                listRecvStr = recvStr.Split(new string[] { "<EOF>" }, System.StringSplitOptions.None);
-            }
+            OperatingRecStr();
+
         }
+    }
+
+    void OperatingRecStr()
+    {
+        if (recvStr.Substring(recvStr.Length - 5, 5) == "<EOF>")
+        {
+            listRecvStr = recvStr.Split(new string[] { "<EOF>" }, StringSplitOptions.None);
+        }
+        recOrNot = true;
+        Thread.Sleep(2);
     }
 
     void SocketQuit()
     {
-        
+
         if (connectThread != null)
         {
             connectThread.Interrupt();
@@ -134,23 +136,20 @@ public class TCPClientReceive : MonoBehaviour
     {
         try
         {
-            //if (oldObject != objClient)
-            //{
-            //    SocketSendByte(objClient);
-            //    oldObject = objClient;
-            //}
-            if (recOrNot)
+            if (recOrNot == true)
             {
+                recOrNot = false;
+                int count = 1;
                 foreach (string recvFinal in listRecvStr)
                 {
-                    print(recvFinal);
+                    print(recvFinal + count.ToString());
+                    count++;
                     recOrNot = false;
                     JSONNode jData = JSON.Parse(recvFinal);
                     string header = jData["header"];
                     if (header == "ps")
                     {
                         PlantSet ps = JsonUtility.FromJson<PlantSet>(recvFinal);
-                        //print(ps.Name + ps.pos + ps.rotate);
                         GameObject plantSetWant = GameObject.Find(ps.Name);
                         mpUI.GeneratePlantAnchor(ps.Name, ps.pos, ps.rotate, true);
                     }
@@ -166,7 +165,6 @@ public class TCPClientReceive : MonoBehaviour
                         singlePlant.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<InputField>().text = spR.param3;
                     }
                 }
-
             }
         }
         catch (Exception e)
@@ -179,4 +177,5 @@ public class TCPClientReceive : MonoBehaviour
     {
         SocketQuit();
     }
+
 }

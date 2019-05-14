@@ -1,15 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.XR.WSA;
 using UnityEngine.XR.WSA.Sharing;
 using Vuforia;
 using Newtonsoft.Json;
-using UnityEngine.Networking;
 using System.Text;
-using System;
 
 public class WorldAnchorOperation : MonoBehaviour
 {
@@ -47,7 +43,9 @@ public class WorldAnchorOperation : MonoBehaviour
         if (syncOrNot == true)
         {
             syncOrNot = false;
+
             tCP.SocketSend("NeedToSyncPlantSet");
+            //tCP.SendMessage("NeedToSyncPlantSet");
         }
     }
 
@@ -60,7 +58,7 @@ public class WorldAnchorOperation : MonoBehaviour
             WorldAnchorTransferBatch watb = new WorldAnchorTransferBatch();
             watb.AddWorldAnchor(spaceId, wa);
             imgSet.SetActive(true);
-            tCP.InitSocket();
+            //tCP.InitSocket();
             
             exportedData = new byte[0];
             e = new List<byte>();
@@ -98,11 +96,17 @@ public class WorldAnchorOperation : MonoBehaviour
         else if (Choice == Selection.SycnDirectly)
         {
             //tCP.InitSocket();
-            indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
+
+            //indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
+
             //anchorData = DownloadAnchorData(spaceId);
-            TextAsset asset = Resources.Load("data_demonstration") as TextAsset;
-            anchorData = asset.bytes;
-            ImportWorldAnchor(anchorData);
+
+            //TextAsset asset = Resources.Load("data_anchor") as TextAsset;
+            //anchorData = asset.bytes;
+            //ImportWorldAnchor(anchorData);
+
+            //unit test:
+            syncOrNot = true;
         }
     }
 

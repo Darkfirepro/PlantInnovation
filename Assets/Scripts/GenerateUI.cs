@@ -9,16 +9,28 @@ public class GenerateUI : MonoBehaviour
 {
     private string plantName;
     public MultiplyUi mpUI;
+    public TCPClientReceive tCP;
+
 
     public void Start()
     {
         plantName = transform.parent.GetComponent<ImageTargetBehaviour>().TrackableName;
         mpUI = GameObject.FindGameObjectWithTag("SceneManager").GetComponent<MultiplyUi>();
+        tCP = GameObject.Find("NetworkTransfer").GetComponent<TCPClientReceive>();
     }
 
     public void StartLocatingPant()
     {
         mpUI.GeneratePlantAnchor(plantName, transform.position, transform.eulerAngles, false);
+        GameObject UIcontainer = GameObject.Find(plantName);
+        PlantSet pObject = new PlantSet
+        {
+            Name = plantName,
+            rotate = UIcontainer.transform.localEulerAngles,
+            pos = UIcontainer.transform.localPosition,
+            header = "ps"
+        };
+        tCP.SocketSendByte(pObject);
     }
 
 }

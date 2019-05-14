@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Microsoft.MixedReality.Toolkit.Diagnostics;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,6 +25,7 @@ public class MultiplyUi : MonoBehaviour
         taskPanel.SetActive(false);
         col = new List<string> { "A", "B", "C", "D" };
         row = new List<int> { 1, 2, 3, 4, 5 };
+        GameObject.Find("Diagnostics").GetComponent<MixedRealityToolkitVisualProfiler>().IsVisible = false;
     }
 
     public void AddWorldAnchor()
