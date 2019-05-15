@@ -1250,8 +1250,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2551330273150222253}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.000095144984, y: -0.10064236, z: 0.0011023878}
-  m_LocalScale: {x: 1.0000198, y: 3.9062014, z: 0.8441113}
+  m_LocalPosition: {x: -0.000095144984, y: -0.0748, z: 0.0011023878}
+  m_LocalScale: {x: 1.0000198, y: 2.256769, z: 0.8441113}
   m_Children: []
   m_Father: {fileID: 2551330274075916724}
   m_RootOrder: 3
@@ -1727,7 +1727,7 @@ MonoBehaviour:
   Profiles:
   - Target: {fileID: 2551330273334700960}
     Themes:
-    - {fileID: 11400000, guid: 34927bf1a1259e141a45f1dedff98d7f, type: 2}
+    - {fileID: 11400000, guid: 1872be27ce323c54f93896976d90d5c4, type: 2}
     HadDefaultTheme: 1
   OnClick:
     m_PersistentCalls:
@@ -1934,8 +1934,8 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2551330273649311420}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0.00826}
+  m_LocalRotation: {x: 0.39945924, y: -0, z: -0, w: 0.91675097}
+  m_LocalPosition: {x: 0, y: 0, z: 0.0863}
   m_LocalScale: {x: 0.00032530376, y: 0.000325304, z: 0.000325304}
   m_Children:
   - {fileID: 7950721694541465607}
@@ -1947,10 +1947,10 @@ RectTransform:
   - {fileID: 7580847269314251141}
   m_Father: {fileID: 2551330274075916724}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 47.089, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.09314, y: 0.0225}
+  m_AnchoredPosition: {x: -0.0011, y: 0.0731}
   m_SizeDelta: {x: 356.164, y: 483.90723}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &2551330273649311411
@@ -2335,7 +2335,7 @@ MonoBehaviour:
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 2551330274241812732}
   m_TextComponent: {fileID: 2551330272865365423}
   m_Placeholder: {fileID: 2551330272950308811}
@@ -2355,8 +2355,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4556735838615749713}
-        m_MethodName: ValueChangeCheck
+      - m_Target: {fileID: 0}
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3801,7 +3801,7 @@ PrefabInstance:
     - target: {fileID: 8440238954540769001, guid: 975d4960136b58942b7c26490d4f8636,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.287
+      value: -0.26
       objectReference: {fileID: 0}
     - target: {fileID: 8440238954540769001, guid: 975d4960136b58942b7c26490d4f8636,
         type: 3}

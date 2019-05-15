@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,14 +11,21 @@ public class ShowBoxInUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        inputField = GetComponent<InputField>();
+        inputField = gameObject.GetComponent<InputField>();
         bondingBox.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (gameObject.GetComponent<InputField>().text == "1")
+        {
+            bondingBox.SetActive(true);
+        }
+        else if (gameObject.GetComponent<InputField>().text == "0" || gameObject.GetComponent<InputField>().text == "")
+        {
+            bondingBox.SetActive(false);
+        }
     }
 
     public void PressNo()
@@ -32,16 +40,24 @@ public class ShowBoxInUI : MonoBehaviour
         inputField.text = "1";
     }
 
-    public void ValueChangeCheck()
-    {
-        if (inputField.text == "1")
-        {
-            bondingBox.SetActive(true);
-        }
-        else if (inputField.text == "0" || inputField.text == "")
-        {
-            bondingBox.SetActive(false);
-        }
-    }
+    //public void ValueChangeCheck()
+    //{
+    //    try
+    //    {
+    //        if (gameObject.GetComponent<InputField>().text == "1")
+    //        {
+    //            bondingBox.SetActive(true);
+    //        }
+    //        else if (gameObject.GetComponent<InputField>().text == "0" || gameObject.GetComponent<InputField>().text == "")
+    //        {
+    //            bondingBox.SetActive(false);
+    //        }
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        print(e);
+    //    }
+
+    //}
 
 }

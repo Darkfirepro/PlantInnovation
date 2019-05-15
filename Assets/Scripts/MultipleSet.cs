@@ -33,7 +33,7 @@ public class MultipleSet : MonoBehaviour
                 {
                     GameObject uiWholeD = Instantiate(UIWhole, transform, false);
                     newV.x = UIWhole.transform.localPosition.x + num * gap - gap * (row-1);
-                    newV.y = UIWhole.transform.localPosition.y + 0.3f;
+                    newV.y = UIWhole.transform.localPosition.y + 0.25f;
                     newV.z = UIWhole.transform.localPosition.z + heightNum * gap - gap * (height-1);
                     uiWholeD.transform.localPosition = newV;
                     uiWholeD.transform.GetChild(0).gameObject.SetActive(false);

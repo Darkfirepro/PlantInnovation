@@ -9,6 +9,7 @@ using SimpleJSON;
 using UnityEngine.UI;
 using Newtonsoft.Json;
 using UnityEngine.XR.WSA;
+using System.Collections.Generic;
 
 public class TCPClientReceive : MonoBehaviour
 {
@@ -17,8 +18,9 @@ public class TCPClientReceive : MonoBehaviour
     IPEndPoint ipEnd;
     string recvStr;
     string sendStr;
-    string[] listRecvStr;
-    byte[] recvData = new byte[1024];
+    public string[] listRecvStr;
+    private string[] oldListRecStr;
+    byte[] recvData = new byte[4096];
     byte[] sendData = new byte[1024];
     int recvLen;
     Thread connectThread;
@@ -27,6 +29,7 @@ public class TCPClientReceive : MonoBehaviour
     private bool recOrNot = false;
     public MultiplyUi mpUI;
     public bool transSwitch = false;
+    public int plantSetNum = 10000;
 
     public void InitSocket()
     {
@@ -48,6 +51,7 @@ public class TCPClientReceive : MonoBehaviour
         recvLen = serverSocket.Receive(recvData);
         print(recvLen);
         recvStr = Encoding.UTF8.GetString(recvData, 0, recvLen);
+        print(recvStr);
 
         OperatingRecStr();
     }
@@ -85,14 +89,16 @@ public class TCPClientReceive : MonoBehaviour
 
         while (true)
         {
-            recvData = new byte[1024];
+            recvData = new byte[4096];
             recvLen = serverSocket.Receive(recvData);
+            print(recvLen);
             if (recvLen == 0)
             {
                 SocketConnet();
                 continue;
             }
             recvStr = Encoding.UTF8.GetString(recvData, 0, recvLen);
+            print(recvStr);
             OperatingRecStr();
 
         }
@@ -106,6 +112,7 @@ public class TCPClientReceive : MonoBehaviour
         }
         recOrNot = true;
         Thread.Sleep(2);
+        
     }
 
     void SocketQuit()
@@ -136,19 +143,21 @@ public class TCPClientReceive : MonoBehaviour
     {
         try
         {
-            if (recOrNot == true)
+            if (oldListRecStr != listRecvStr)
             {
+                oldListRecStr = listRecvStr;
                 recOrNot = false;
-                int count = 1;
+                int count_plantSet = 0;
                 foreach (string recvFinal in listRecvStr)
                 {
-                    print(recvFinal + count.ToString());
-                    count++;
+                    //print(recvFinal + count_plantSet.ToString());
                     recOrNot = false;
                     JSONNode jData = JSON.Parse(recvFinal);
+                    print(jData);
                     string header = jData["header"];
                     if (header == "ps")
                     {
+                        count_plantSet++;
                         PlantSet ps = JsonUtility.FromJson<PlantSet>(recvFinal);
                         GameObject plantSetWant = GameObject.Find(ps.Name);
                         mpUI.GeneratePlantAnchor(ps.Name, ps.pos, ps.rotate, true);
@@ -164,8 +173,22 @@ public class TCPClientReceive : MonoBehaviour
                         singlePlant.transform.GetChild(0).GetChild(2).GetChild(0).GetComponent<InputField>().text = spR.param2;
                         singlePlant.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<InputField>().text = spR.param3;
                     }
+
+                    else if (header == "pds_sync")
+                    {
+                        //print(jData.ToString());
+                        GameObject singlePlant = GameObject.Find(jData["singNameId"]);
+                        print("the name of obejct: " + jData["singNameId"]);
+                        singlePlant.transform.GetChild(0).gameObject.SetActive(true);
+                        singlePlant.transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<InputField>().text = jData["param1"];
+                        singlePlant.transform.GetChild(0).GetChild(2).GetChild(0).GetComponent<InputField>().text = jData["param2"];
+                        singlePlant.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<InputField>().text = jData["param3"];
+                        //singlePlant.transform.GetChild(0).gameObject.SetActive(false);
+                    }
                 }
+                plantSetNum = count_plantSet;
             }
+            
         }
         catch (Exception e)
         {

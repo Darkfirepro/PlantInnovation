@@ -22,6 +22,7 @@ public class WorldAnchorOperation : MonoBehaviour
     private int retryCount = 10;
     private byte[] anchorData;
     private bool syncOrNot = false;
+    private bool syncPlantInfor = false;
 
     //world anchor unity web request:
     public string anchorStoreHost = "https://ie.csiro.au/services/dan-test-server/v1/api/spaces/";
@@ -45,7 +46,11 @@ public class WorldAnchorOperation : MonoBehaviour
             syncOrNot = false;
 
             tCP.SocketSend("NeedToSyncPlantSet");
-            //tCP.SendMessage("NeedToSyncPlantSet");
+        }
+        if (GameObject.FindGameObjectsWithTag("PlantSet").Length == tCP.plantSetNum && syncPlantInfor)
+        {
+            syncPlantInfor = false;
+            tCP.SocketSend("NeedToSyncPlantInfor");
         }
     }
 
@@ -97,16 +102,23 @@ public class WorldAnchorOperation : MonoBehaviour
         {
             //tCP.InitSocket();
 
-            //indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
+            indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
 
             //anchorData = DownloadAnchorData(spaceId);
-
-            //TextAsset asset = Resources.Load("data_anchor") as TextAsset;
-            //anchorData = asset.bytes;
-            //ImportWorldAnchor(anchorData);
-
+            if (indicator.GetComponent<MeshRenderer>().material.color != Color.green)
+            {
+                TextAsset asset = Resources.Load("data_anchor") as TextAsset;
+                anchorData = asset.bytes;
+                ImportWorldAnchor(anchorData);
+            }
+            else
+            {
+                syncOrNot = true;
+                syncPlantInfor = true;
+            }
             //unit test:
-            syncOrNot = true;
+            //syncOrNot = true;
+            //syncPlantInfor = true;
         }
     }
 
@@ -137,6 +149,7 @@ public class WorldAnchorOperation : MonoBehaviour
             deserializedTransferBatch.LockObject(spaceId, gameObject);
             
             syncOrNot = true;
+            syncPlantInfor = true;
         }
         else
         {
