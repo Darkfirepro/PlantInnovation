@@ -18,9 +18,10 @@ public class TCPClientReceive : MonoBehaviour
     IPEndPoint ipEnd;
     string recvStr;
     string sendStr;
-    public string[] listRecvStr;
-    private string[] oldListRecStr;
-    byte[] recvData = new byte[4096];
+    public List<string> listRecvStr;
+    private List<string> oldListRecStr;
+    private string tempString = "";
+    byte[] recvData = new byte[256];
     byte[] sendData = new byte[1024];
     int recvLen;
     Thread connectThread;
@@ -56,21 +57,10 @@ public class TCPClientReceive : MonoBehaviour
         OperatingRecStr();
     }
 
-    public void SocketSend(string sendStr)
-    {
-
-        sendData = new byte[1024];
-
-        sendData = Encoding.UTF8.GetBytes(sendStr);
-
-        serverSocket.SendTo(sendData, sendData.Length, SocketFlags.None, ipEnd);
-    }
-
     public void SocketSendByte(object obj)
     {
         sendData = new byte[1024];
-        string senDataJson = JsonUtility.ToJson(obj);
-
+        string senDataJson = JsonUtility.ToJson(obj) + "<EOF>";
         sendData = Encoding.UTF8.GetBytes(senDataJson);
         serverSocket.SendTo(sendData, sendData.Length, SocketFlags.None, ipEnd);
     }
@@ -89,7 +79,7 @@ public class TCPClientReceive : MonoBehaviour
 
         while (true)
         {
-            recvData = new byte[4096];
+            recvData = new byte[256];
             recvLen = serverSocket.Receive(recvData);
             print(recvLen);
             if (recvLen == 0)
@@ -106,18 +96,26 @@ public class TCPClientReceive : MonoBehaviour
 
     void OperatingRecStr()
     {
-        if (recvStr.Substring(recvStr.Length - 5, 5) == "<EOF>")
+        tempString += recvStr;
+        try
         {
-            listRecvStr = recvStr.Split(new string[] { "<EOF>" }, StringSplitOptions.None);
+            if (recvStr.Substring(recvStr.Length - 5, 5) == "<EOF>")
+            {
+                listRecvStr = new List<string>(tempString.Split(new string[] { "<EOF>" }, StringSplitOptions.RemoveEmptyEntries));
+                tempString = "";
+            }
         }
-        recOrNot = true;
-        Thread.Sleep(2);
-        
+        catch (ArgumentOutOfRangeException)
+        {
+            print("Make sure you server send correct objects!");
+        }
+
     }
 
     void SocketQuit()
     {
-
+        recvStr = "";
+        SocketSendByte(new SendMsg("ClientShutDown"));
         if (connectThread != null)
         {
             connectThread.Interrupt();
@@ -126,8 +124,6 @@ public class TCPClientReceive : MonoBehaviour
 
         if (serverSocket != null)
             serverSocket.Close();
-        recvStr = "";
-        SocketSend("ClientShutDown");
         print("disconnect");
     }
 
@@ -153,7 +149,7 @@ public class TCPClientReceive : MonoBehaviour
                     //print(recvFinal + count_plantSet.ToString());
                     recOrNot = false;
                     JSONNode jData = JSON.Parse(recvFinal);
-                    print(jData);
+                    //print(jData);
                     string header = jData["header"];
                     if (header == "ps")
                     {
@@ -186,7 +182,7 @@ public class TCPClientReceive : MonoBehaviour
                         //singlePlant.transform.GetChild(0).gameObject.SetActive(false);
                     }
                 }
-                plantSetNum = count_plantSet;
+                plantSetNum = count_plantSet + 1;
             }
             
         }

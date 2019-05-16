@@ -26,6 +26,18 @@ public class SingPlant
 }
 
 [Serializable]
+public class SendMsg
+{
+    public string header;
+    public string msg;
+    public SendMsg(string content)
+    {
+        header = "msg";
+        msg = content;
+    }
+}
+
+[Serializable]
 public class WorldAnchorTrans
 {
     public string header;
