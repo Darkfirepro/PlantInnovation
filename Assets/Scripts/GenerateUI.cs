@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Microsoft.MixedReality.Toolkit.UI;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +20,7 @@ public class GenerateUI : MonoBehaviour
         tCP = GameObject.Find("NetworkTransfer").GetComponent<TCPClientReceive>();
     }
 
+
     public void StartLocatingPant()
     {
         mpUI.GeneratePlantAnchor(plantName, transform.position, transform.eulerAngles, false);
@@ -31,6 +33,12 @@ public class GenerateUI : MonoBehaviour
             header = "ps"
         };
         tCP.SocketSendByte(pObject);
+
+        //foreach (Transform uiWhole in UIcontainer.transform.GetChild(0))
+        //{
+        //    GameObject button = uiWhole.GetChild(0).GetChild(4).gameObject;
+        //    button.GetComponent<Interactable>().OnClick.Invoke();
+        //}
     }
 
 }

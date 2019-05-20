@@ -49,25 +49,30 @@ public class TCPClient : MonoBehaviour
         }
         else if (clientChoice == Client.SinglePlantDetails)
         {
-            pObject = new SingPlant
-            {
-                singName = transform.parent.parent.name.Split('|')[0],
-                singId = int.Parse(transform.parent.parent.name.Split('|')[1]),
-                param1 = transform.parent.GetChild(1).GetChild(0).GetComponent<InputField>().text,
-                param2 = transform.parent.GetChild(2).GetChild(0).GetComponent<InputField>().text,
-                param3 = transform.parent.GetChild(3).GetChild(0).GetComponent<InputField>().text,
-                header = "pds"
-            };
-            //tCP.objClient = pObject;
-
-            tCP.SocketSendByte(pObject);
-
-            //tCP.SendMessage(JsonUtility.ToJson(pObject));
-
-            transform.parent.gameObject.SetActive(false);
-
+            SendSingleDetails(1);
         }
 
+    }
+
+    public void SendSingleDetails(int i)
+    {
+        pObject = new SingPlant
+        {
+            singName = transform.parent.parent.name.Split('|')[0],
+            singId = int.Parse(transform.parent.parent.name.Split('|')[1]),
+            param1 = transform.parent.GetChild(1).GetChild(0).GetComponent<InputField>().text,
+            param2 = transform.parent.GetChild(2).GetChild(0).GetComponent<InputField>().text,
+            param3 = transform.parent.GetChild(3).GetChild(0).GetComponent<InputField>().text,
+            showPlant = i,
+            header = "pds"
+        };
+        //tCP.objClient = pObject;
+
+        tCP.SocketSendByte(pObject);
+
+        //tCP.SendMessage(JsonUtility.ToJson(pObject));
+
+        transform.parent.gameObject.SetActive(false);
     }
 
 }

@@ -7,6 +7,7 @@ public class InitialSelect : MonoBehaviour
 {
     public GameObject syncStart;
     public GameObject mainToolStart;
+    public GameObject plantMap;
     // Start is called before the first frame update
 
     public void ShowSync()
@@ -31,6 +32,18 @@ public class InitialSelect : MonoBehaviour
     {
         gameObject.SetActive(true);
         mainToolStart.SetActive(false);
+    }
+
+    public void ShowPlantMap()
+    {
+        plantMap.SetActive(true);
+        gameObject.SetActive(false);
+    }
+
+    public void ClosePantMap()
+    {
+        gameObject.SetActive(true);
+        plantMap.SetActive(false);
     }
 
     void Start()

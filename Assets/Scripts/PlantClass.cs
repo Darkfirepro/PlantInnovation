@@ -22,8 +22,10 @@ public class SingPlant
     public string param1;
     public string param2;
     public string param3;
+    public int showPlant;
     public string header;
 }
+
 
 [Serializable]
 public class SendMsg

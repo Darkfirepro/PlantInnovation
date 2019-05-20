@@ -38,15 +38,15 @@ public class MultipleSet : MonoBehaviour
                     uiWholeD.transform.localPosition = newV;
                     uiWholeD.transform.GetChild(0).gameObject.SetActive(false);
                     //Tim test:
-                    uiWholeD.SetActive(false);
+                    //uiWholeD.SetActive(false);
                     count++;
                 }
             }
         }
         //Tim test:
-        transform.GetChild(2).gameObject.SetActive(true);
-        transform.GetChild(9).gameObject.SetActive(true);
-        transform.GetChild(17).gameObject.SetActive(true);
+        //transform.GetChild(2).gameObject.SetActive(true);
+        //transform.GetChild(9).gameObject.SetActive(true);
+        //transform.GetChild(17).gameObject.SetActive(true);
 
         UIWhole.transform.GetChild(0).gameObject.SetActive(false);
     }

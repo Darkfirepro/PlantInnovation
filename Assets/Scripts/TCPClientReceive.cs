@@ -10,6 +10,8 @@ using UnityEngine.UI;
 using Newtonsoft.Json;
 using UnityEngine.XR.WSA;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 public class TCPClientReceive : MonoBehaviour
 {
@@ -67,10 +69,21 @@ public class TCPClientReceive : MonoBehaviour
 
     public void SendWorlAnchor(WorldAnchorTrans w)
     {
-        sendData = new byte[1024 * 1000 * 7];
-        string senDataJson = JsonUtility.ToJson(w);
+        byte[] sendData = new byte[1024];
+        //string senDataJson = JsonUtility.ToJson(w) + "<EOF>";
+        string senDataJson = JsonConvert.SerializeObject(w) + "<EOF>";
+        //sendData = ObjectToByteArray(w);
         sendData = Encoding.UTF8.GetBytes(senDataJson);
-        serverSocket.SendTo(sendData, sendData.Length, SocketFlags.None, ipEnd);
+        
+        int totalByteToSend = sendData.Length;
+        int byteSend = 0;
+        print("the total byte is:" + sendData.Length);
+        while (byteSend < totalByteToSend)
+        {
+            byteSend += serverSocket.Send(sendData, byteSend, totalByteToSend - byteSend, SocketFlags.None);
+        }
+        
+        //serverSocket.SendTo(sendData, sendData.Length, SocketFlags.None, ipEnd);
     }
 
     void SocketReceive()
@@ -107,7 +120,7 @@ public class TCPClientReceive : MonoBehaviour
         }
         catch (ArgumentOutOfRangeException)
         {
-            print("Make sure you server send correct objects!");
+            print("Make sure your server send correct objects!");
         }
 
     }
@@ -115,7 +128,6 @@ public class TCPClientReceive : MonoBehaviour
     void SocketQuit()
     {
         recvStr = "";
-        SocketSendByte(new SendMsg("ClientShutDown"));
         if (connectThread != null)
         {
             connectThread.Interrupt();
@@ -155,6 +167,7 @@ public class TCPClientReceive : MonoBehaviour
                     {
                         count_plantSet++;
                         PlantSet ps = JsonUtility.FromJson<PlantSet>(recvFinal);
+                        //PlantSet ps = JsonConvert.DeserializeObject<PlantSet>(recvFinal);
                         GameObject plantSetWant = GameObject.Find(ps.Name);
                         mpUI.GeneratePlantAnchor(ps.Name, ps.pos, ps.rotate, true);
                     }
@@ -162,6 +175,7 @@ public class TCPClientReceive : MonoBehaviour
                     else if (header == "pds")
                     {
                         SingPlant spR = JsonUtility.FromJson<SingPlant>(recvFinal);
+                        //SingPlant spR = JsonConvert.DeserializeObject<SingPlant>(recvFinal);
                         print(spR.singName + "|" + spR.singId.ToString());
                         GameObject singlePlant = GameObject.Find(spR.singName + "|" + spR.singId.ToString());
                         singlePlant.transform.GetChild(0).gameObject.SetActive(true);
@@ -182,7 +196,7 @@ public class TCPClientReceive : MonoBehaviour
                         //singlePlant.transform.GetChild(0).gameObject.SetActive(false);
                     }
                 }
-                plantSetNum = count_plantSet + 1;
+                plantSetNum = count_plantSet;
             }
             
         }
@@ -195,6 +209,16 @@ public class TCPClientReceive : MonoBehaviour
     void OnApplicationQuit()
     {
         SocketQuit();
+    }
+
+    private byte[] ObjectToByteArray(object obj)
+    {
+        if (obj == null)
+            return null;
+        BinaryFormatter bf = new BinaryFormatter();
+        MemoryStream ms = new MemoryStream();
+        bf.Serialize(ms, obj);
+        return ms.ToArray();
     }
 
 }

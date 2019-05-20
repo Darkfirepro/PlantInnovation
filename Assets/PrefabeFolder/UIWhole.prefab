@@ -3874,6 +3874,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SaveButton
       objectReference: {fileID: 0}
+    - target: {fileID: 8053163853916978769, guid: 4e04203928d622d45945365c1d9be4cf,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1711948080793217126, guid: 4e04203928d622d45945365c1d9be4cf,
         type: 3}
       propertyPath: m_LocalPosition.x
