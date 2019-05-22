@@ -23,7 +23,7 @@ public class TCPClientReceive : MonoBehaviour
     public List<string> listRecvStr;
     private List<string> oldListRecStr;
     private string tempString = "";
-    byte[] recvData = new byte[256];
+    byte[] recvData = new byte[1024];
     byte[] sendData = new byte[1024];
     int recvLen;
     Thread connectThread;
@@ -32,7 +32,7 @@ public class TCPClientReceive : MonoBehaviour
     private bool recOrNot = false;
     public MultiplyUi mpUI;
     public bool transSwitch = false;
-    public int plantSetNum = 10000;
+    public int plantSetNum;
 
     public void InitSocket()
     {
@@ -52,11 +52,11 @@ public class TCPClientReceive : MonoBehaviour
         serverSocket.Connect(ipEnd);
 
         recvLen = serverSocket.Receive(recvData);
-        print(recvLen);
+        //print(recvLen);
         recvStr = Encoding.UTF8.GetString(recvData, 0, recvLen);
-        print(recvStr);
+        //print(recvStr);
 
-        OperatingRecStr();
+        OperatingRecStr(recvStr);
     }
 
     public void SocketSendByte(object obj)
@@ -74,7 +74,7 @@ public class TCPClientReceive : MonoBehaviour
         string senDataJson = JsonConvert.SerializeObject(w) + "<EOF>";
         //sendData = ObjectToByteArray(w);
         sendData = Encoding.UTF8.GetBytes(senDataJson);
-        
+
         int totalByteToSend = sendData.Length;
         int byteSend = 0;
         print("the total byte is:" + sendData.Length);
@@ -82,7 +82,7 @@ public class TCPClientReceive : MonoBehaviour
         {
             byteSend += serverSocket.Send(sendData, byteSend, totalByteToSend - byteSend, SocketFlags.None);
         }
-        
+
         //serverSocket.SendTo(sendData, sendData.Length, SocketFlags.None, ipEnd);
     }
 
@@ -92,30 +92,36 @@ public class TCPClientReceive : MonoBehaviour
 
         while (true)
         {
-            recvData = new byte[256];
+            recvData = new byte[1024];
             recvLen = serverSocket.Receive(recvData);
-            print(recvLen);
+            //print(recvLen);
             if (recvLen == 0)
             {
                 SocketConnet();
                 continue;
             }
             recvStr = Encoding.UTF8.GetString(recvData, 0, recvLen);
-            print(recvStr);
-            OperatingRecStr();
-
+            //print(recvStr);
+            OperatingRecStr(recvStr);
+          
         }
     }
 
-    void OperatingRecStr()
+    void OperatingRecStr(string recTemp)
     {
-        tempString += recvStr;
+        tempString += recTemp;
         try
         {
-            if (recvStr.Substring(recvStr.Length - 5, 5) == "<EOF>")
+            if (recTemp.Substring(recTemp.Length - 5, 5) == "<EOF>")
             {
                 listRecvStr = new List<string>(tempString.Split(new string[] { "<EOF>" }, StringSplitOptions.RemoveEmptyEntries));
+                foreach (string i in listRecvStr)
+                {
+                    print(i);
+                }
+                
                 tempString = "";
+                
             }
         }
         catch (ArgumentOutOfRangeException)
@@ -139,10 +145,10 @@ public class TCPClientReceive : MonoBehaviour
         print("disconnect");
     }
 
-
     void Start()
     {
         //oldObject = objClient;
+        
         mpUI = GameObject.FindGameObjectWithTag("SceneManager").GetComponent<MultiplyUi>();
         InitSocket();
     }
@@ -151,21 +157,18 @@ public class TCPClientReceive : MonoBehaviour
     {
         try
         {
-            if (oldListRecStr != listRecvStr)
+            if (listRecvStr.Count != 0)
             {
-                oldListRecStr = listRecvStr;
-                recOrNot = false;
-                int count_plantSet = 0;
+                //oldListRecStr = listRecvStr;
+                //recOrNot = false;
                 foreach (string recvFinal in listRecvStr)
                 {
                     //print(recvFinal + count_plantSet.ToString());
-                    recOrNot = false;
                     JSONNode jData = JSON.Parse(recvFinal);
                     //print(jData);
                     string header = jData["header"];
                     if (header == "ps")
                     {
-                        count_plantSet++;
                         PlantSet ps = JsonUtility.FromJson<PlantSet>(recvFinal);
                         //PlantSet ps = JsonConvert.DeserializeObject<PlantSet>(recvFinal);
                         GameObject plantSetWant = GameObject.Find(ps.Name);
@@ -174,35 +177,56 @@ public class TCPClientReceive : MonoBehaviour
 
                     else if (header == "pds")
                     {
-                        SingPlant spR = JsonUtility.FromJson<SingPlant>(recvFinal);
-                        //SingPlant spR = JsonConvert.DeserializeObject<SingPlant>(recvFinal);
-                        print(spR.singName + "|" + spR.singId.ToString());
-                        GameObject singlePlant = GameObject.Find(spR.singName + "|" + spR.singId.ToString());
-                        singlePlant.transform.GetChild(0).gameObject.SetActive(true);
-                        singlePlant.transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<InputField>().text = spR.param1;
-                        singlePlant.transform.GetChild(0).GetChild(2).GetChild(0).GetComponent<InputField>().text = spR.param2;
-                        singlePlant.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<InputField>().text = spR.param3;
+                        GameObject singlePlant = FindSinglePlant(jData["singName"], jData["singId"]);
+                        UpdateSingPlant(singlePlant, jData, true);
                     }
 
                     else if (header == "pds_sync")
                     {
-                        //print(jData.ToString());
-                        GameObject singlePlant = GameObject.Find(jData["singNameId"]);
-                        print("the name of obejct: " + jData["singNameId"]);
-                        singlePlant.transform.GetChild(0).gameObject.SetActive(true);
-                        singlePlant.transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<InputField>().text = jData["param1"];
-                        singlePlant.transform.GetChild(0).GetChild(2).GetChild(0).GetComponent<InputField>().text = jData["param2"];
-                        singlePlant.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<InputField>().text = jData["param3"];
-                        //singlePlant.transform.GetChild(0).gameObject.SetActive(false);
+                        GameObject singlePlant = FindSinglePlant(jData["singName"], jData["singId"]);
+                        UpdateSingPlant(singlePlant, jData, false);
+                    }
+
+                    else if (header == "PN")
+                    {
+                        plantSetNum = int.Parse(jData["PlantNumber"]);
                     }
                 }
-                plantSetNum = count_plantSet;
+                listRecvStr = new List<string>();
             }
-            
+
         }
         catch (Exception e)
         {
             print("Error happens here:" + e);
+        }
+    }
+
+    public GameObject FindSinglePlant(string plantName, int pNum)
+    {
+        GameObject uiWhole = GameObject.Find(plantName).transform.GetChild(0).GetChild(pNum - 1).gameObject;
+        return uiWhole;
+    }
+
+    public void UpdateSingPlant(GameObject singlePlant, JSONNode jData, bool showOrNot)
+    {
+        //print(jData.ToString());
+        singlePlant.transform.GetChild(0).GetChild(1).GetChild(0).GetComponent<InputField>().text = jData["param1"];
+        singlePlant.transform.GetChild(0).GetChild(2).GetChild(0).GetComponent<InputField>().text = jData["param2"];
+        singlePlant.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<InputField>().text = jData["param3"];
+        if (int.Parse(jData["showPlant"]) == 1)
+        {
+            singlePlant.SetActive(true);
+            singlePlant.transform.GetChild(0).gameObject.SetActive(showOrNot);
+            if (singlePlant.transform.GetChild(0).GetChild(2).GetChild(0).GetComponent<InputField>().text == "1")
+            {
+                singlePlant.transform.GetChild(2).gameObject.SetActive(true);
+            }
+        }
+        else if (int.Parse(jData["showPlant"]) == 0)
+        {
+            print("the showplant or not is 0 here");
+            singlePlant.SetActive(false);
         }
     }
 

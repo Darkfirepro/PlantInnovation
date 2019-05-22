@@ -68,6 +68,7 @@ public class TCPClient : MonoBehaviour
         };
         //tCP.objClient = pObject;
 
+        tCP = GameObject.Find("NetworkTransfer").GetComponent<TCPClientReceive>();
         tCP.SocketSendByte(pObject);
 
         //tCP.SendMessage(JsonUtility.ToJson(pObject));

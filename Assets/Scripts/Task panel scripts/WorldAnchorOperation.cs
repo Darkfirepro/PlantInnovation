@@ -22,7 +22,6 @@ public class WorldAnchorOperation : MonoBehaviour
     private int retryCount = 10;
     private byte[] anchorData;
     private bool syncOrNot = false;
-    private bool syncPlantInfor = false;
 
     //world anchor unity web request:
     public string anchorStoreHost = "https://ie.csiro.au/services/dan-test-server/v1/api/spaces/";
@@ -47,9 +46,10 @@ public class WorldAnchorOperation : MonoBehaviour
             SendMsg sendstr = new SendMsg("NeedToSyncPlantSet");
             tCP.SocketSendByte(sendstr);
         }
-        if (GameObject.FindGameObjectsWithTag("PlantSet").Length == tCP.plantSetNum && syncPlantInfor)
+        if (GameObject.FindGameObjectsWithTag("PlantSet").Length == tCP.plantSetNum)
         {
-            syncPlantInfor = false;
+            tCP.plantSetNum = 10000;
+            print("the number of the planst set in scene is: " + tCP.plantSetNum.ToString());
             SendMsg sendstr = new SendMsg("NeedToSyncPlantInfor");
             tCP.SocketSendByte(sendstr);
         }
@@ -126,7 +126,7 @@ public class WorldAnchorOperation : MonoBehaviour
             else
             {
                 syncOrNot = true;
-                syncPlantInfor = true;
+                //syncPlantInfor = true;
             }
             //unit test:
             //syncOrNot = true;
@@ -161,7 +161,7 @@ public class WorldAnchorOperation : MonoBehaviour
             deserializedTransferBatch.LockObject(spaceId, gameObject);
             
             syncOrNot = true;
-            syncPlantInfor = true;
+            //syncPlantInfor = true;
         }
         else
         {
