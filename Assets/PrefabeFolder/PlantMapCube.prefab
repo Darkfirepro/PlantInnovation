@@ -337,7 +337,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6533563875506904891}
-        m_MethodName: ActiveOrNot
+        m_MethodName: ActOrNavi
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -362,6 +362,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7769a1b5f14f08742af12eb4558d646e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlantMapSet: {fileID: 0}
+  directionIndicator: {fileID: 133742, guid: 7086e5a88ad0ffe4497036c0fe13718f, type: 3}
+  navigate: 0
 --- !u!1 &943736225216153308
 GameObject:
   m_ObjectHideFlags: 0

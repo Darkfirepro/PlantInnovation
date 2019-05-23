@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using TMPro;
 using UnityEngine;
 
 namespace HoloToolkit.Unity
@@ -28,6 +29,8 @@ namespace HoloToolkit.Unity
         [Range(0.1f, 1.0f)]
         public float MetersFromCursor = 0.3f;
 
+
+        public string coneTextContent = "";
         private Camera mainCamera;
 
         // The default rotation of the cursor direction indicator.
@@ -70,7 +73,6 @@ namespace HoloToolkit.Unity
         {
             DestroyImmediate(indicatorMaterial);
             Destroy(DirectionIndicatorObject);
-            Destroy(DirectionIndicatorObject.transform.GetChild(0).gameObject);
         }
 
         private GameObject InstantiateDirectionIndicator(GameObject directionIndicator)
@@ -134,6 +136,12 @@ namespace HoloToolkit.Unity
 
                 DirectionIndicatorObject.transform.position = position;
                 DirectionIndicatorObject.transform.rotation = rotation;
+                DirectionIndicatorObject.transform.GetChild(0).gameObject.SetActive(true);
+                DirectionIndicatorObject.transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = coneTextContent;
+            }
+            else
+            {
+                DirectionIndicatorObject.transform.GetChild(0).gameObject.SetActive(false);
             }
         }
 

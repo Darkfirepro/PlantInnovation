@@ -3,7 +3,9 @@ guid: 7769a1b5f14f08742af12eb4558d646e
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - PlantMapSet: {instanceID: 0}
+  - directionIndicator: {fileID: 133742, guid: 7086e5a88ad0ffe4497036c0fe13718f, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
