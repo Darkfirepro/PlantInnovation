@@ -8,14 +8,21 @@ using UnityEngine;
 
 public class ShowPlant : MonoBehaviour
 {
-    public GameObject PlantMapSet;
+    [HideInInspector]public GameObject PlantMapSet;
     public GameObject directionIndicator;
     public bool navigate = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        PlantMapSet = gameObject.transform.parent.GetChild(2).gameObject;
+        try
+        {
+            PlantMapSet = gameObject.transform.parent.GetChild(2).gameObject;
+        }
+        catch (UnityException)
+        {
+            print("pass here");
+        }
     }
 
     // Update is called once per frame

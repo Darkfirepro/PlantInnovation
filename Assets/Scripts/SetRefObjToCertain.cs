@@ -5,17 +5,29 @@ using UnityEngine;
 public class SetRefObjToCertain : MonoBehaviour
 {
 
-    public GameObject ObjFollowWith;
+    public int totalSyncNum = 0;
+    public GameObject cheese;
+    bool trigger;
     // Start is called before the first frame update
     void Start()
     {
-        
+        trigger = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position = ObjFollowWith.transform.position;
-        transform.rotation = ObjFollowWith.transform.rotation;
+
     }
+
+    public void MoveRefObj()
+    {
+        if (trigger == false)
+        {
+            gameObject.transform.position = cheese.transform.position;
+            trigger = true;
+        }
+        
+    }
+
 }

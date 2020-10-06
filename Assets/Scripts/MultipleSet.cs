@@ -8,7 +8,7 @@ public class MultipleSet : MonoBehaviour
     public GameObject UIWhole;
     public int row = 5;
     public int height = 4;
-    public float gap = 0.08f;
+    public float gap = 0.8f;
     public float floating;
     public string plantVar1 = "Height";
     public string plantVar2 = "Seeds number";

@@ -16,6 +16,8 @@ TagManager:
   - SpaceNameObject
   - ImgRecSet
   - AssistantTips
+  - OldSystemTest
+  - NewSystemTest
   layers:
   - Default
   - TransparentFX

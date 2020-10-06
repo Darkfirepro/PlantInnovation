@@ -6,11 +6,13 @@ using UnityEngine.XR.WSA.Sharing;
 using Vuforia;
 using Newtonsoft.Json;
 using System.Text;
+using Microsoft.Azure.SpatialAnchors;
+using System.Collections;
 
 public class WorldAnchorOperation : MonoBehaviour
 {
 
-    public enum Selection { CreateNew, SycnDirectly };
+    public enum Selection { CreateNew, SycnDirectly, LocationSync, CreateNew_multi, Version1, Version2 };
     public Selection Choice;
     private GameObject ParentAnchor;
     private byte[] exportedData;
@@ -19,7 +21,7 @@ public class WorldAnchorOperation : MonoBehaviour
     public TCPClientReceive tCP;
     public GameObject indicator;
     public GameObject imgSet;
-    private int retryCount = 10;
+    private int retryCount = 3;
     private byte[] anchorData;
     private bool syncOrNot = false;
 
@@ -28,6 +30,14 @@ public class WorldAnchorOperation : MonoBehaviour
     private string spaceIdWeb = "Dan";
     const string ANCHOR_STORE = "anchors/";
     const string ANCHOR_DATA = "data/";
+
+    public GameObject anchorObject1;
+    public GameObject anchorObject2;
+    public GameObject anchorObject3;
+    public GameObject anchorObject4;
+    public GameObject anchorObject5;
+    public GameObject anchorObject2_1;
+    public GameObject anchorObject3_1;
 
 
     // Start is called before the first frame update
@@ -40,98 +50,120 @@ public class WorldAnchorOperation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (syncOrNot == true)
-        {
-            syncOrNot = false;
-            SendMsg sendstr = new SendMsg("NeedToSyncPlantSet");
-            tCP.SocketSendByte(sendstr);
-        }
-        if (GameObject.FindGameObjectsWithTag("PlantSet").Length == tCP.plantSetNum)
-        {
-            tCP.plantSetNum = 10000;
-            print("the number of the planst set in scene is: " + tCP.plantSetNum.ToString());
-            SendMsg sendstr = new SendMsg("NeedToSyncPlantInfor");
-            tCP.SocketSendByte(sendstr);
-        }
+
     }
 
     public void PressAndGenerate()
     {
         if (Choice == Selection.CreateNew)
         {
-            TextAsset asset = Resources.Load("data_PP") as TextAsset;
-            anchorData = asset.bytes;
-            WorldAnchorTrans wat = new WorldAnchorTrans
-            {
-                header = "wa",
-                spaceName = spaceId,
-                data = anchorData
-            };
-            tCP.SendWorlAnchor(wat);
-            //ParentAnchor = GameObject.Find("RefernceSceneBuilder");
-            //WorldAnchor wa = ParentAnchor.AddComponent<WorldAnchor>();
-            //WorldAnchorTransferBatch watb = new WorldAnchorTransferBatch();
-            //watb.AddWorldAnchor(spaceId, wa);
-            //imgSet.SetActive(true);
+            //TextAsset asset = Resources.Load("data_demonstration") as TextAsset;
+            //anchorData = asset.bytes;
+            //WorldAnchorTrans wat = new WorldAnchorTrans
+            //{
+            //    header = "wa",
+            //    spaceName = spaceId,
+            //    data = anchorData
+            //};
+            //tCP.SendWorlAnchor(wat);
+
+            TimeCost tc4 = new TimeCost("OFALL", Time.time.ToString() + "start generating the anchor");
+            tCP.SocketSendByte(tc4);
+            //GameObject parentanchor = GameObject.Find("anchor1");
+            WorldAnchor wa1 = anchorObject1.AddComponent<WorldAnchor>();
+            WorldAnchorTransferBatch watb = new WorldAnchorTransferBatch();
+            watb.AddWorldAnchor(anchorObject1.name, wa1);
+            WorldAnchor wa2 = anchorObject2.AddComponent<WorldAnchor>();
+            watb.AddWorldAnchor(anchorObject2.name, wa2);
+            TimeCost tc5 = new TimeCost("OFALL", Time.time.ToString() + "Generating anchor done");
+            tCP.SocketSendByte(tc5);
+            imgSet.SetActive(true);
             //tCP.InitSocket();
 
-            //exportedData = new byte[0];
-            //e = new List<byte>();
-            //indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
-            //syncOrNot = true;
-            //WorldAnchorTransferBatch.ExportAsync(watb,
-            //(data) =>
-            //{
-            //    e.AddRange(data);
-            //    exportedData = data;
-            //},
-            //    (reason) =>
-            //    {
+            exportedData = new byte[0];
+            e = new List<byte>();
+            indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
+            syncOrNot = true;
+            TimeCost tc6 = new TimeCost("OFALL", Time.time.ToString() + "start serializing the anchor");
+            tCP.SocketSendByte(tc6);
+            WorldAnchorTransferBatch.ExportAsync(watb,
+            (data) =>
+            {
+                e.AddRange(data);
+                exportedData = data;
+            },
+                (reason) =>
+                {
 
-            //        if (reason == SerializationCompletionReason.Succeeded)
-            //        {
-            //            WorldAnchorTrans wat = new WorldAnchorTrans
-            //            {
-            //                header = "wa",
-            //                spaceName = spaceId,
-            //                data = e.ToArray()
-            //            };
-            //            tCP.SendWorlAnchor(wat);
-            //            CreateNewAnchorInManager();
-            //            indicator.GetComponent<MeshRenderer>().material.color = Color.green;
-            //            syncOrNot = true;
-            //        }
-            //        else
-            //        {
-            //            print("failed to upload world anchor, please try agagin");
-            //            indicator.GetComponent<MeshRenderer>().material.color = Color.red;
-            //        }
-            //    });
+                    if (reason == SerializationCompletionReason.Succeeded)
+                    {
+                        WorldAnchorTrans wat = new WorldAnchorTrans
+                        {
+                            header = "wa",
+                            spaceName = spaceId,
+                            data = e.ToArray()
+                        };
+                        TimeCost tc7 = new TimeCost("OFALL", Time.time.ToString() + "start sending anchor data");
+                        tCP.SocketSendByte(tc7);
+                        tCP.SendWorlAnchor(wat);
+                        //CreateNewAnchorInManager();
+                        indicator.GetComponent<MeshRenderer>().material.color = Color.green;
+
+                        syncOrNot = true;
+                    }
+                    else
+                    {
+                        Debug.Log("failed to upload world anchor, please try agagin");
+                        indicator.GetComponent<MeshRenderer>().material.color = Color.red;
+                    }
+                });
         }
         else if (Choice == Selection.SycnDirectly)
         {
             //tCP.InitSocket();
+            StartCoroutine(DownloadAnchor(spaceId));
 
-
-
-            //anchorData = DownloadAnchorData(spaceId);
-            indicator.GetComponent<MeshRenderer>().material.color = Color.green;
-            if (indicator.GetComponent<MeshRenderer>().material.color != Color.green)
-            {
-                indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
-                TextAsset asset = Resources.Load("data_PP") as TextAsset;
-                anchorData = asset.bytes;
-                ImportWorldAnchor(anchorData);
-            }
-            else
-            {
-                syncOrNot = true;
-                //syncPlantInfor = true;
-            }
-            //unit test:
-            //syncOrNot = true;
-            //syncPlantInfor = true;
         }
+        else if (Choice == Selection.LocationSync)
+        {
+            SendMsg msgNeed = new SendMsg("NeedToSyncPlantSet");
+            tCP.SocketSendByte(msgNeed);
+        }
+
+        else if (Choice == Selection.CreateNew_multi)
+        {
+            WorldAnchor wa1 = anchorObject1.AddComponent<WorldAnchor>();
+            WorldAnchorTransferBatch watb = new WorldAnchorTransferBatch();
+            watb.AddWorldAnchor(anchorObject1.name, wa1);
+            WorldAnchor wa2 = anchorObject2.AddComponent<WorldAnchor>();
+            watb.AddWorldAnchor(anchorObject2.name, wa2);
+            WorldAnchor wa3 = anchorObject3.AddComponent<WorldAnchor>();
+            WorldAnchor wa4 = anchorObject4.AddComponent<WorldAnchor>();
+            WorldAnchor wa5 = anchorObject5.AddComponent<WorldAnchor>();
+            WorldAnchor wa2_1 = anchorObject2_1.AddComponent<WorldAnchor>();
+            WorldAnchor wa3_1 = anchorObject3_1.AddComponent<WorldAnchor>();
+            imgSet.SetActive(true);
+        }
+        else if (Choice == Selection.Version1)
+        {
+            anchorObject1.SetActive(true);
+            anchorObject2_1.SetActive(true);
+            anchorObject3_1.SetActive(true);
+        }
+        else if (Choice == Selection.Version2)
+        {
+            anchorObject1.SetActive(true);
+            anchorObject2.SetActive(true);
+            anchorObject3.SetActive(true);
+            anchorObject4.SetActive(true);
+            anchorObject5.SetActive(true);
+        }
+    }
+
+    IEnumerator SendAnchorTime(TimeCost tc)
+    {
+        tCP.SocketSendByte(tc);
+        yield return new WaitForSeconds(0.1f);
     }
 
     private void ImportWorldAnchor(byte[] importedData)
@@ -154,12 +186,19 @@ public class WorldAnchorOperation : MonoBehaviour
             return;
         }
 
-        GameObject gameObject = GameObject.Find("RefernceSceneBuilder");
-        if (gameObject != null)
+        GameObject rb = GameObject.Find("anchor1");
+        if (rb != null)
         {
+
+            foreach (string anid in deserializedTransferBatch.GetAllIds())
+            {
+                Debug.Log("the anchor id contained is: " + anid);
+                if (anid == "anchor1") deserializedTransferBatch.LockObject(anid, anchorObject1);
+                else if (anid == "anchor2") deserializedTransferBatch.LockObject(anid, anchorObject2);
+            }
             indicator.GetComponent<MeshRenderer>().material.color = Color.green;
-            deserializedTransferBatch.LockObject(spaceId, gameObject);
-            
+            TimeCost tc3 = new TimeCost("OFALL", Time.time.ToString() + "successfully locate the anchor");
+            tCP.SocketSendByte(tc3);
             syncOrNot = true;
             //syncPlantInfor = true;
         }
@@ -176,8 +215,8 @@ public class WorldAnchorOperation : MonoBehaviour
         PlantInfo plantInfo1 = new PlantInfo(plant);
         AnchorInfo anchorInfo1 = new AnchorInfo(plantInfo1);
         anchorInfo1.id = spaceId;
-        AnchorInfo anchorNew = CreateAnchor(anchorInfo1);
-        anchorNew = UpdateAnchorData(anchorInfo1.id, e.ToArray());
+        //AnchorInfo anchorNew = CreateAnchor(anchorInfo1);
+        UpdateAnchorData(anchorInfo1.id, e.ToArray());
         //anchorInfoManager.anchorInfoList.Add(anchorNew);
     }
 
@@ -250,6 +289,41 @@ public class WorldAnchorOperation : MonoBehaviour
             return new byte[0];
             //return r.downloadHandler.data;
         }
+    }
+
+    IEnumerator DownloadAnchor(string id)
+    {
+        imgSet.SetActive(true);
+        indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
+        AnchorRequire ar = new AnchorRequire(id);
+        TimeCost tc = new TimeCost("OFALL", Time.time.ToString() + "send request to server to download anchor");
+        tCP.SocketSendByte(tc);
+        tCP.SocketSendByte(ar);
+        yield return new WaitUntil(() => tCP.anchorData.Length != 0);
+        TimeCost tc1 = new TimeCost("OFALL", Time.time.ToString() + "get the anchor done");
+        tCP.SocketSendByte(tc1);
+        //Debug.Log("the size of anchor: " + tCP.anchorData.Length.ToString());
+        anchorData = tCP.anchorData;
+        tCP.anchorData = null;
+        //Debug.Log("start to change colour of cube");
+        if (indicator.GetComponent<MeshRenderer>().material.color != Color.green)
+        {
+
+            //TextAsset asset = Resources.Load("AnchorData/CSIRO_Lab") as TextAsset;
+            //anchorData = asset.bytes;
+            indicator.GetComponent<MeshRenderer>().material.color = Color.blue;
+            TimeCost tc2 = new TimeCost("OFALL", Time.time.ToString() + "start locating the anchor");
+            tCP.SocketSendByte(tc2);
+            ImportWorldAnchor(anchorData);
+        }
+        else
+        {
+            syncOrNot = true;
+            //syncPlantInfor = true;
+        }
+        //unit test:
+        //syncOrNot = true;
+        //syncPlantInfor = true;
     }
 
 

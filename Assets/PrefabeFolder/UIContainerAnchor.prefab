@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7127087439912791097}
   - component: {fileID: 4316259706838231320}
+  - component: {fileID: 506409199297408666}
   m_Layer: 0
   m_Name: UIContainerAnchor
   m_TagString: PlantSet
@@ -39,13 +40,25 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7127087440719525645}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 07e1e81a0ce08604e9f127fed75d36dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   clientChoice: 0
   tCP: {fileID: 0}
+--- !u!114 &506409199297408666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7127087440719525645}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843914f044459c04598c95dec408a85f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7127087440966933581
 GameObject:
   m_ObjectHideFlags: 0

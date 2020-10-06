@@ -23,8 +23,8 @@ public class TCPClientReceive : MonoBehaviour
     public List<string> listRecvStr;
     private List<string> oldListRecStr;
     private string tempString = "";
-    byte[] recvData = new byte[1024];
-    byte[] sendData = new byte[1024];
+    byte[] recvData = new byte[81920];
+    byte[] sendData = new byte[81920];
     int recvLen;
     Thread connectThread;
     //public object objClient;
@@ -33,10 +33,11 @@ public class TCPClientReceive : MonoBehaviour
     public MultiplyUi mpUI;
     public bool transSwitch = false;
     public int plantSetNum;
+    public byte[] anchorData = null;
 
     public void InitSocket()
     {
-        ip = IPAddress.Parse("45.32.190.167");
+        ip = IPAddress.Parse("192.168.0.123");
         ipEnd = new IPEndPoint(ip, 6666);
 
         connectThread = new Thread(new ThreadStart(SocketReceive));
@@ -61,7 +62,7 @@ public class TCPClientReceive : MonoBehaviour
 
     public void SocketSendByte(object obj)
     {
-        sendData = new byte[1024];
+        sendData = new byte[81920];
         string senDataJson = JsonUtility.ToJson(obj) + "<EOF>";
         sendData = Encoding.UTF8.GetBytes(senDataJson);
         serverSocket.SendTo(sendData, sendData.Length, SocketFlags.None, ipEnd);
@@ -69,15 +70,16 @@ public class TCPClientReceive : MonoBehaviour
 
     public void SendWorlAnchor(WorldAnchorTrans w)
     {
-        byte[] sendData = new byte[1024];
-        //string senDataJson = JsonUtility.ToJson(w) + "<EOF>";
-        string senDataJson = JsonConvert.SerializeObject(w) + "<EOF>";
+        byte[] sendData = new byte[81920];
+        string senDataJson = JsonUtility.ToJson(w) + "<EOF>";
+        //string senDataJson = JsonConvert.SerializeObject(w) + "<EOF>";
         //sendData = ObjectToByteArray(w);
+        //string senDataJson = "{'header':'wa', 'spaceName':" + id +  ", 'data':" + w.ToString() + "}" + "<EOF>" ;
         sendData = Encoding.UTF8.GetBytes(senDataJson);
 
         int totalByteToSend = sendData.Length;
         int byteSend = 0;
-        print("the total byte is:" + sendData.Length);
+        Debug.Log("the total byte is:" + sendData.Length);
         while (byteSend < totalByteToSend)
         {
             byteSend += serverSocket.Send(sendData, byteSend, totalByteToSend - byteSend, SocketFlags.None);
@@ -92,7 +94,7 @@ public class TCPClientReceive : MonoBehaviour
 
         while (true)
         {
-            recvData = new byte[1024];
+            recvData = new byte[81920];
             recvLen = serverSocket.Receive(recvData);
             //print(recvLen);
             if (recvLen == 0)
@@ -103,7 +105,7 @@ public class TCPClientReceive : MonoBehaviour
             recvStr = Encoding.UTF8.GetString(recvData, 0, recvLen);
             //print(recvStr);
             OperatingRecStr(recvStr);
-          
+
         }
     }
 
@@ -119,9 +121,9 @@ public class TCPClientReceive : MonoBehaviour
                 {
                     print(i);
                 }
-                
+
                 tempString = "";
-                
+
             }
         }
         catch (ArgumentOutOfRangeException)
@@ -148,7 +150,7 @@ public class TCPClientReceive : MonoBehaviour
     void Start()
     {
         //oldObject = objClient;
-        
+
         mpUI = GameObject.FindGameObjectWithTag("SceneManager").GetComponent<MultiplyUi>();
         InitSocket();
     }
@@ -190,6 +192,13 @@ public class TCPClientReceive : MonoBehaviour
                     else if (header == "PN")
                     {
                         plantSetNum = int.Parse(jData["PlantNumber"]);
+                    }
+
+                    else if (header == "wa")
+                    {
+                        WorldAnchorTrans wat = JsonUtility.FromJson<WorldAnchorTrans>(recvFinal);
+                        anchorData = wat.data;
+                        Debug.Log("download anchor with tcp successfully");
                     }
                 }
                 listRecvStr = new List<string>();

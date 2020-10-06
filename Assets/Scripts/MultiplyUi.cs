@@ -13,6 +13,7 @@ public class MultiplyUi : MonoBehaviour
     public GameObject planUiAnchor;
     public List<string> col;
     public List<int> row;
+    public NewSystemSync nss;
 
     public void Awake()
     {
@@ -39,7 +40,7 @@ public class MultiplyUi : MonoBehaviour
         Application.Quit();
     }
 
-    public void GeneratePlantAnchor(string pname, Vector3 pos, Vector3 rotate, bool localOrNot)
+    public GameObject GeneratePlantAnchor(string pname, Vector3 pos, Vector3 rotate, bool localOrNot)
     {
         if (GameObject.Find(pname) != null)
         {
@@ -56,6 +57,7 @@ public class MultiplyUi : MonoBehaviour
                 existPlantUI.transform.localPosition = pos;
                 existPlantUI.transform.localEulerAngles = rotate;
             }
+            return existPlantUI;
             //add world anchor:
             //existPlantUI.AddComponent<WorldAnchor>();
         }
@@ -100,6 +102,8 @@ public class MultiplyUi : MonoBehaviour
                 uiWhole.GetChild(1).GetChild(3).GetComponent<InputField>().text = potNum.ToString();
                 p_number++;
             }
+            nss.countPlant++;
+            return newPlantUI;
         }
 
     }
