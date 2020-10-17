@@ -37,7 +37,7 @@ public class TCPClientReceive : MonoBehaviour
 
     public void InitSocket()
     {
-        ip = IPAddress.Parse("192.168.0.123");
+        ip = IPAddress.Parse("207.148.86.204");
         ipEnd = new IPEndPoint(ip, 6666);
 
         connectThread = new Thread(new ThreadStart(SocketReceive));

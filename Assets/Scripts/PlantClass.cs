@@ -52,6 +52,29 @@ public class AnchorRequire
 }
 
 [Serializable]
+public class NavigationData
+{
+    public string header;
+    public string devType;
+    public Vector3 pos;
+    public Quaternion rot;
+    public string anchorName;
+    public string timeAction;
+    public string actionType;
+
+    public NavigationData(string devT, Vector3 pos1, Quaternion rot1, string anchorName1, string timeAction1, string actionType1)
+    {
+        header = "NaviData";
+        devType = devT;
+        pos = pos1;
+        rot = rot1;
+        anchorName = anchorName1;
+        timeAction = timeAction1;
+        actionType = actionType1;
+    }
+}
+
+[Serializable]
 public class TimeCost
 {
     public string header;

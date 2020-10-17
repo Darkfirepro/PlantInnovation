@@ -37,6 +37,7 @@ public class WorldAnchorOperation : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        watb = new WorldAnchorTransferBatch();
         tCP = GameObject.Find("NetworkTransfer").GetComponent<TCPClientReceive>();
         spaceId = GameObject.FindGameObjectWithTag("SpaceNameObject").GetComponent<ImageTargetBehaviour>().TrackableName;
     }
@@ -51,7 +52,6 @@ public class WorldAnchorOperation : MonoBehaviour
     {
         if (Choice == Selection.CreateNew)
         {
-            watb = new WorldAnchorTransferBatch();
             exportedData = new byte[0];
             e = new List<byte>();
             indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
@@ -144,88 +144,6 @@ public class WorldAnchorOperation : MonoBehaviour
         }
     }
 
-    public void CreateNewAnchorInManager()
-    {
-        List<Plant> plant = new List<Plant>();
-        PlantInfo plantInfo1 = new PlantInfo(plant);
-        AnchorInfo anchorInfo1 = new AnchorInfo(plantInfo1);
-        anchorInfo1.id = spaceId;
-        //AnchorInfo anchorNew = CreateAnchor(anchorInfo1);
-        UpdateAnchorData(anchorInfo1.id, e.ToArray());
-        //anchorInfoManager.anchorInfoList.Add(anchorNew);
-    }
-
-    public AnchorInfo CreateAnchor(AnchorInfo anchorInfo)
-    {
-        UploadHandlerRaw u = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(anchorInfo)));
-
-        DownloadHandlerBuffer d = new DownloadHandlerBuffer();
-
-        UnityWebRequest r = new UnityWebRequest(anchorStoreHost + GetSpaceId() + "/" + ANCHOR_STORE + "/" + anchorInfo.id, "PUT", d, u);
-        r.SetRequestHeader("Content-Type", "application/json");
-        r.SendWebRequest();
-        return ReadJSONResponse<AnchorInfo>(r);
-    }
-
-
-    public T ReadJSONResponse<T>(UnityWebRequest r)
-    {
-        if (CheckResponse(r))
-        {
-            return JsonUtility.FromJson<T>(r.downloadHandler.text);
-
-        }
-        else
-        {
-            return default(T);
-        }
-    }
-
-    public string GetSpaceId()
-    {
-        return spaceIdWeb;
-    }
-
-    public AnchorInfo UpdateAnchorData(string id, byte[] data)
-    {
-        UnityWebRequest r = UnityWebRequest.Put(anchorStoreHost + GetSpaceId() + "/" + ANCHOR_STORE + id + "/" + ANCHOR_DATA, data);
-
-        r.SendWebRequest();
-
-        return ReadJSONResponse<AnchorInfo>(r);
-    }
-
-    public bool CheckResponse(UnityWebRequest r)
-    {
-        if (r.responseCode / 100 != 2)
-        {
-            //if (HoloControllerManager.Instance != null)
-            //    HoloControllerManager.Instance.ShowLabel("WEB ERROR: " + r.responseCode + " - " + r.error + "\n" + r.downloadHandler.text);
-            //Debug.LogError(r.responseCode + " - " + r.error + "\n" + r.downloadHandler.text + "\n \n");
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-    public byte[] DownloadAnchorData(string id)
-    {
-        UnityWebRequest r = UnityWebRequest.Get(anchorStoreHost + GetSpaceId() + "/" + ANCHOR_STORE + id + "/" + ANCHOR_DATA);
-        r.SendWebRequest();
-        if (CheckResponse(r))
-        {
-            return r.downloadHandler.data;
-        }
-        else
-        {
-            indicator.GetComponent<MeshRenderer>().material.color = Color.blue;
-            return new byte[0];
-            //return r.downloadHandler.data;
-        }
-    }
-
     IEnumerator DownloadAnchor(string id)
     {
         indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
@@ -246,9 +164,6 @@ public class WorldAnchorOperation : MonoBehaviour
             syncOrNot = true;
             //syncPlantInfor = true;
         }
-        //unit test:
-        //syncOrNot = true;
-        //syncPlantInfor = true;
     }
 
 

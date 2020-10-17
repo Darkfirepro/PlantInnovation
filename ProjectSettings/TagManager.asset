@@ -18,6 +18,7 @@ TagManager:
   - AssistantTips
   - OldSystemTest
   - NewSystemTest
+  - SyncAnchor
   layers:
   - Default
   - TransparentFX
