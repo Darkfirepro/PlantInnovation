@@ -23,6 +23,7 @@ public class StartMove : MonoBehaviour
             NavigationData dataSend = new NavigationData("QRcode", plantTray.transform.localPosition, plantTray.transform.localRotation,
                 anchorName, System.DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), "Start Moving");
             tcp.SocketSendByte(dataSend);
+            Debug.Log("send navi data to server");
             anchorNeed.GetComponent<SendCamPos>().trigger = true;
         }
 
@@ -45,6 +46,7 @@ public class StartMove : MonoBehaviour
             NavigationData dataSend = new NavigationData("QRcode", plantTray.transform.localPosition, plantTray.transform.localRotation,
                 anchorName, System.DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), "Complete Moving");
             tcp.SocketSendByte(dataSend);
+            Debug.Log("send navi data to server");
             anchorNeed.GetComponent<SendCamPos>().trigger = false;
         }
 

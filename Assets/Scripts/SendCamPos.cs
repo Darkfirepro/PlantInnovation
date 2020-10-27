@@ -30,7 +30,9 @@ public class SendCamPos : MonoBehaviour
                 NavigationData dataSend = new NavigationData("Camera", pos, rot, anchorName, 
                     System.DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), "Moving to");
                 tcp.SocketSendByte(dataSend);
+                timeCurrent = Time.time;
             }
+
         }
     }
 }

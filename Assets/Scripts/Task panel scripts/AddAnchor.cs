@@ -20,9 +20,8 @@ public class AddAnchor : MonoBehaviour
 
     public void PutAnchorOnObject()
     {
-        WorldAnchor wa = gameObject.AddComponent<WorldAnchor>();
+        WorldAnchor wa = transform.parent.gameObject.AddComponent<WorldAnchor>();
         GameObject syncAnchor = GameObject.Find("SyncAnchor");
-        WorldAnchorTransferBatch inst = syncAnchor.GetComponent<WorldAnchorOperation>().watb;
-        inst.AddWorldAnchor(name, wa);
+        syncAnchor.GetComponent<WorldAnchorOperation>().watb.AddWorldAnchor(transform.parent.name, wa);
     }
 }

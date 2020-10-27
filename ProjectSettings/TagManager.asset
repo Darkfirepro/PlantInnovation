@@ -19,6 +19,7 @@ TagManager:
   - OldSystemTest
   - NewSystemTest
   - SyncAnchor
+  - path_obj
   layers:
   - Default
   - TransparentFX
@@ -29,8 +30,8 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - 
-  - 
+  - Character
+  - anchor
   - 
   - 
   - 

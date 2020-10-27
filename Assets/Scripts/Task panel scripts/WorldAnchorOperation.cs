@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Text;
 using Microsoft.Azure.SpatialAnchors;
 using System.Collections;
+using System.IO;
 
 public class WorldAnchorOperation : MonoBehaviour
 {
@@ -23,9 +24,12 @@ public class WorldAnchorOperation : MonoBehaviour
     private string spaceId;
     public TCPClientReceive tCP;
     public GameObject indicator;
-    private int retryCount = 3;
-    private byte[] anchorData;
+    private int retryCount = 15;
     private bool syncOrNot = false;
+
+    string bytePath;
+
+    byte[] anchorDataRecv;
 
     //world anchor unity web request:
     public string anchorStoreHost = "https://ie.csiro.au/services/dan-test-server/v1/api/spaces/";
@@ -40,6 +44,7 @@ public class WorldAnchorOperation : MonoBehaviour
         watb = new WorldAnchorTransferBatch();
         tCP = GameObject.Find("NetworkTransfer").GetComponent<TCPClientReceive>();
         spaceId = GameObject.FindGameObjectWithTag("SpaceNameObject").GetComponent<ImageTargetBehaviour>().TrackableName;
+        bytePath = Path.Combine(Application.persistentDataPath, "anchorData");
     }
 
     // Update is called once per frame
@@ -67,14 +72,17 @@ public class WorldAnchorOperation : MonoBehaviour
 
                     if (reason == SerializationCompletionReason.Succeeded)
                     {
-                        WorldAnchorTrans wat = new WorldAnchorTrans
-                        {
-                            header = "wa",
-                            spaceName = spaceId,
-                            data = e.ToArray()
-                        };
-                        tCP.SendWorlAnchor(wat);
+                        //tCP.SendWorlAnchor(e.ToArray());
                         //CreateNewAnchorInManager();
+                        if (File.Exists(bytePath))
+                        {
+                            File.Delete(bytePath);
+                        }
+                        using (FileStream fs = File.Create(bytePath))
+                        {
+                            fs.Write(e.ToArray(), 0, e.ToArray().Length);
+                        }
+                        tCP.SocketSendByte(new SendMsg("success, anchor data size:" + e.ToArray().Length.ToString()));
                         indicator.GetComponent<MeshRenderer>().material.color = Color.green;
 
                         syncOrNot = true;
@@ -86,41 +94,71 @@ public class WorldAnchorOperation : MonoBehaviour
                     }
                 });
         }
-        else if (Choice == Selection.SycnDirectly)
-        {
-            //tCP.InitSocket();
-            StartCoroutine(DownloadAnchor(spaceId));
+    }
 
+    public void SyncAnchor()
+    {
+        indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
+        AnchorRequire ar = new AnchorRequire(spaceId);
+        tCP.SocketSendByte(ar);
+    }
+
+    public void ImportAnchor()
+    {
+        if (indicator.GetComponent<MeshRenderer>().material.color != Color.green)
+        {
+            indicator.GetComponent<MeshRenderer>().material.color = Color.blue;
+            tCP.SocketSendByte(new SendMsg("start to import world anchor"));
+            anchorDataRecv = tCP.anchorData;
+            WorldAnchorTransferBatch.ImportAsync(anchorDataRecv, OnImportComplete);
         }
     }
 
-    private void ImportWorldAnchor(byte[] importedData)
+    public void ImportAnchorWithReadingBytes()
     {
-        WorldAnchorTransferBatch.ImportAsync(importedData, OnImportComplete);
+        //TextAsset asset = Resources.Load("wa_data") as TextAsset;
+        //tCP.SocketSendByte(new SendMsg("start to import world anchor"));
+        //anchorDataRecv = asset.bytes;
+        //WorldAnchorTransferBatch.ImportAsync(anchorDataRecv, OnImportComplete);
+        tCP.SocketSendByte(new SendMsg("start to read world anchor from local anchor data"));
+        anchorDataRecv = File.ReadAllBytes(bytePath);
+        tCP.SocketSendByte(new SendMsg("start to import world anchor from local anchor data"));
+        WorldAnchorTransferBatch.ImportAsync(anchorDataRecv, OnImportComplete);
     }
 
 
-    private void OnImportComplete(SerializationCompletionReason completionReason, WorldAnchorTransferBatch deserializedTransferBatch)
+    public void OnImportComplete(SerializationCompletionReason completionReason, WorldAnchorTransferBatch deserializedTransferBatch)
     {
+        tCP.SocketSendByte(new SendMsg("start to check on import complete"));
         if (completionReason != SerializationCompletionReason.Succeeded)
         {
-            Debug.Log("Failed to import: " + completionReason.ToString());
+            tCP.SocketSendByte(new SendMsg("fail to import and try again"));
             if (retryCount > 0)
             {
                 retryCount--;
                 indicator.GetComponent<MeshRenderer>().material.color = Color.cyan;
-                WorldAnchorTransferBatch.ImportAsync(anchorData, OnImportComplete);
+                WorldAnchorTransferBatch.ImportAsync(anchorDataRecv, OnImportComplete);
             }
             return;
         }
-
-        GameObject rb = GameObject.Find("anchor1");
-        if (rb != null)
+        else if (completionReason == SerializationCompletionReason.Succeeded)
         {
-
+            if (deserializedTransferBatch.anchorCount == 0)
+            {
+                tCP.SocketSendByte(new SendMsg("sucess, but anchor count is 0"));
+                if (retryCount > 0)
+                {
+                    retryCount--;
+                    indicator.GetComponent<MeshRenderer>().material.color = Color.cyan;
+                    WorldAnchorTransferBatch.ImportAsync(anchorDataRecv, OnImportComplete);
+                }
+                return;
+            }
+            
+            tCP.SocketSendByte(new SendMsg("import successfully, trying to check anchor id"));
             foreach (string anid in deserializedTransferBatch.GetAllIds())
             {
-                Debug.Log("the anchor id contained is: " + anid);
+                tCP.SocketSendByte(new SendMsg("the anchor id contained is: " + anid));
                 GameObject anchorObj = GameObject.Find(anid);
                 if (anchorObj != null)
                 {
@@ -133,9 +171,9 @@ public class WorldAnchorOperation : MonoBehaviour
                     deserializedTransferBatch.LockObject(anid, ins);
                 }
             }
+            GameObject syncAnchor = GameObject.Find("SyncAnchor");
+            syncAnchor.GetComponent<WorldAnchorOperation>().watb = deserializedTransferBatch;
             indicator.GetComponent<MeshRenderer>().material.color = Color.green;
-            syncOrNot = true;
-            //syncPlantInfor = true;
         }
         else
         {
@@ -144,26 +182,25 @@ public class WorldAnchorOperation : MonoBehaviour
         }
     }
 
-    IEnumerator DownloadAnchor(string id)
+    public void DownloadAnchor(string id)
     {
         indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
         AnchorRequire ar = new AnchorRequire(id);
         tCP.SocketSendByte(ar);
-        yield return new WaitUntil(() => tCP.anchorData.Length != 0);
-        //Debug.Log("the size of anchor: " + tCP.anchorData.Length.ToString());
-        anchorData = tCP.anchorData;
-        tCP.anchorData = null;
-        //Debug.Log("start to change colour of cube");
-        if (indicator.GetComponent<MeshRenderer>().material.color != Color.green)
-        {
-            indicator.GetComponent<MeshRenderer>().material.color = Color.blue;
-            ImportWorldAnchor(anchorData);
-        }
-        else
-        {
-            syncOrNot = true;
-            //syncPlantInfor = true;
-        }
+        //yield return new WaitUntil(() => tCP.anchorData.Length != 0);
+        //anchorData = tCP.anchorData;
+        //tCP.anchorData = null;
+        //if (indicator.GetComponent<MeshRenderer>().material.color != Color.green)
+        //{
+        //    indicator.GetComponent<MeshRenderer>().material.color = Color.blue;
+        //    Debug.Log("start to import the world anchor");
+        //    ImportWorldAnchor(anchorData);
+        //}
+        //else
+        //{
+        //    syncOrNot = true;
+        //    //syncPlantInfor = true;
+        //}
     }
 
 
