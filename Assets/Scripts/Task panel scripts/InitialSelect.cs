@@ -49,7 +49,7 @@ public class InitialSelect : MonoBehaviour
     void Start()
     {
         GameObject userTips = GameObject.FindGameObjectWithTag("AssistantTips");
-        string spaceName = GameObject.FindGameObjectWithTag("SpaceNameObject").GetComponent<ImageTargetBehaviour>().TrackableName;
+        string spaceName = "Hancock Library";
         string tips = "Welcome to: " + spaceName + "\nPlease synchronizing you system first";
         userTips.GetComponent<TMPro.TextMeshPro>().text = tips;
     }

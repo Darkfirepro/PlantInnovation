@@ -20,6 +20,7 @@ TagManager:
   - NewSystemTest
   - SyncAnchor
   - path_obj
+  - AnchorParent
   layers:
   - Default
   - TransparentFX

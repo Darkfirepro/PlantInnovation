@@ -9,6 +9,7 @@ using System.Text;
 using Microsoft.Azure.SpatialAnchors;
 using System.Collections;
 using System.IO;
+using TMPro;
 
 public class WorldAnchorOperation : MonoBehaviour
 {
@@ -28,6 +29,8 @@ public class WorldAnchorOperation : MonoBehaviour
     private bool syncOrNot = false;
 
     string bytePath;
+    public TMP_Dropdown dropDownMenu;
+    public string dropValue;
 
     byte[] anchorDataRecv;
 
@@ -44,13 +47,15 @@ public class WorldAnchorOperation : MonoBehaviour
         watb = new WorldAnchorTransferBatch();
         tCP = GameObject.Find("NetworkTransfer").GetComponent<TCPClientReceive>();
         spaceId = GameObject.FindGameObjectWithTag("SpaceNameObject").GetComponent<ImageTargetBehaviour>().TrackableName;
-        bytePath = Path.Combine(Application.persistentDataPath, "anchorData");
+        dropValue = dropDownMenu.options[dropDownMenu.value].text;
+        bytePath = Path.Combine(Application.persistentDataPath, dropValue);
     }
 
     // Update is called once per frame
-    void Update()
+    public void DropDownValueChange()
     {
-
+        dropValue = dropDownMenu.options[dropDownMenu.value].text;
+        bytePath = Path.Combine(Application.persistentDataPath, dropValue);
     }
 
     public void PressAndGenerate()
@@ -187,20 +192,6 @@ public class WorldAnchorOperation : MonoBehaviour
         indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
         AnchorRequire ar = new AnchorRequire(id);
         tCP.SocketSendByte(ar);
-        //yield return new WaitUntil(() => tCP.anchorData.Length != 0);
-        //anchorData = tCP.anchorData;
-        //tCP.anchorData = null;
-        //if (indicator.GetComponent<MeshRenderer>().material.color != Color.green)
-        //{
-        //    indicator.GetComponent<MeshRenderer>().material.color = Color.blue;
-        //    Debug.Log("start to import the world anchor");
-        //    ImportWorldAnchor(anchorData);
-        //}
-        //else
-        //{
-        //    syncOrNot = true;
-        //    //syncPlantInfor = true;
-        //}
     }
 
 

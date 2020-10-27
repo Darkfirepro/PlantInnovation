@@ -24,10 +24,11 @@ public class SendCamPos : MonoBehaviour
             {
                 GameObject anobi = GetComponent<AnchorAttachName>().anchorObject;
                 Vector3 pos = anobi.transform.parent.InverseTransformPoint(cam.transform.position);
+
                 Quaternion rot = new Quaternion(0, 0, 0, 0);
                 string anchorName = anobi.transform.parent.name;
 
-                NavigationData dataSend = new NavigationData("Camera", pos, rot, anchorName, 
+                NavigationData dataSend = new NavigationData("Camera", pos, cam.transform.position, rot, anchorName, 
                     System.DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), "Moving to");
                 tcp.SocketSendByte(dataSend);
                 timeCurrent = Time.time;

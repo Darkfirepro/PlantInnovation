@@ -57,20 +57,37 @@ public class NavigationData
     public string header;
     public string devType;
     public Vector3 pos;
+    public Vector3 posWorld;
     public Quaternion rot;
     public string anchorName;
     public string timeAction;
     public string actionType;
 
-    public NavigationData(string devT, Vector3 pos1, Quaternion rot1, string anchorName1, string timeAction1, string actionType1)
+    public NavigationData(string devT, Vector3 pos1, Vector3 posWorld1, Quaternion rot1, string anchorName1, string timeAction1, string actionType1)
     {
         header = "NaviData";
         devType = devT;
         pos = pos1;
+        posWorld = posWorld1;
         rot = rot1;
         anchorName = anchorName1;
         timeAction = timeAction1;
         actionType = actionType1;
+    }
+}
+
+[Serializable]
+public class AnchorInfo
+{
+    public string header;
+    public string anchorName;
+    public Vector3 anchorPos;
+
+    public AnchorInfo(string _name, Vector3 _pos)
+    {
+        header = "AnchorInfo";
+        anchorName = _name;
+        anchorPos = _pos;
     }
 }
 
@@ -145,20 +162,6 @@ public class Plant
         height = h;
         emergenceDate = data;
         leafNumber = lfno;
-    }
-}
-
-
-[Serializable]
-public class AnchorInfo
-{
-    public string id;
-    public string hash;
-    public int size;
-    public PlantInfo info;
-    public AnchorInfo(PlantInfo info)
-    {
-        this.info = info;
     }
 }
 

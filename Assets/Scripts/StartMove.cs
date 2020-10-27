@@ -20,7 +20,7 @@ public class StartMove : MonoBehaviour
             plantTray.transform.parent = anchorObejct.transform;
 
 
-            NavigationData dataSend = new NavigationData("QRcode", plantTray.transform.localPosition, plantTray.transform.localRotation,
+            NavigationData dataSend = new NavigationData("QRcode", plantTray.transform.localPosition, plantTray.transform.position, plantTray.transform.localRotation,
                 anchorName, System.DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), "Start Moving");
             tcp.SocketSendByte(dataSend);
             Debug.Log("send navi data to server");
@@ -43,7 +43,7 @@ public class StartMove : MonoBehaviour
             plantTray.transform.parent = anchorObejct.transform;
 
 
-            NavigationData dataSend = new NavigationData("QRcode", plantTray.transform.localPosition, plantTray.transform.localRotation,
+            NavigationData dataSend = new NavigationData("QRcode", plantTray.transform.localPosition, plantTray.transform.position, plantTray.transform.localRotation,
                 anchorName, System.DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), "Complete Moving");
             tcp.SocketSendByte(dataSend);
             Debug.Log("send navi data to server");
