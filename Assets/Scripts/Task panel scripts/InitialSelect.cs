@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Microsoft.MixedReality.Toolkit.UI;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Vuforia;
@@ -8,12 +9,14 @@ public class InitialSelect : MonoBehaviour
     public GameObject syncStart;
     public GameObject mainToolStart;
     public GameObject plantMap;
+    public GameObject anchorParent;
     // Start is called before the first frame update
 
     public void ShowSync()
     {
         syncStart.SetActive(true);
         gameObject.SetActive(false);
+        ShowHideAnchor(false);
     }
 
     public void CloseSyncStart()
@@ -26,6 +29,7 @@ public class InitialSelect : MonoBehaviour
     {
         mainToolStart.SetActive(true);
         gameObject.SetActive(false);
+        ShowHideAnchor(true);
     }
 
     public void CloseMainTool()
@@ -38,6 +42,7 @@ public class InitialSelect : MonoBehaviour
     {
         plantMap.SetActive(true);
         gameObject.SetActive(false);
+        ShowHideAnchor(false);
     }
 
     public void ClosePantMap()
@@ -52,6 +57,20 @@ public class InitialSelect : MonoBehaviour
         string spaceName = "Hancock Library";
         string tips = "Welcome to: " + spaceName + "\nPlease synchronizing you system first";
         userTips.GetComponent<TMPro.TextMeshPro>().text = tips;
+    }
+
+    public void ShowHideAnchor(bool trigger)
+    {
+        if (anchorParent.transform.childCount > 0)
+        {
+            foreach (Transform t in anchorParent.transform)
+            {
+                t.GetComponent<MeshRenderer>().enabled = trigger;
+                t.GetComponent<ManipulationHandler>().enabled = trigger;
+                t.GetComponent<BoundingBox>().enabled = trigger;
+                t.GetChild(0).gameObject.SetActive(trigger);
+            }
+        }
     }
 
     // Update is called once per frame

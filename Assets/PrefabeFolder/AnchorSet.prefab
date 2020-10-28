@@ -461,6 +461,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ButtonSet
       objectReference: {fileID: 0}
+    - target: {fileID: 4857302741068522055, guid: 13a98fb31f16fe6459056db9f73a215d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4857302741068522056, guid: 13a98fb31f16fe6459056db9f73a215d,
         type: 3}
       propertyPath: m_LocalPosition.x

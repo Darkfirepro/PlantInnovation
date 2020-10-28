@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -9,19 +10,45 @@ public class PathHistoryVisual : MonoBehaviour
     public GameObject spawnIns;
     Vector3 posOrigin = new Vector3(0, 0, 0);
     public GameObject linePath;
-    List<Vector3> posList = new List<Vector3>();
+    List<GameObject> posList = new List<GameObject>();
+    float originTime;
+    List<GameObject> lineList = new List<GameObject>();
 
 
     // Start is called before the first frame update
     void Start()
     {
         tCP = GameObject.Find("NetworkTransfer").GetComponent<TCPClientReceive>();
+        originTime = Time.time;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Time.time - originTime > 3f)
+        {
+            originTime = Time.time;
+            if (posList.Count > 1)
+            {
+                if (lineList.Count > 0)
+                {
+                    foreach (GameObject line in lineList)
+                    {
+                        Destroy(line);
+                    }
+                    lineList = new List<GameObject>();
+                }
+                for (int i = 0; i < posList.Count-1; i++)
+                {
+                    GameObject lineObject = Instantiate(linePath, posList[i].transform.parent);
+                    LineRenderer _lineRender = lineObject.GetComponent<LineRenderer>();
+                    _lineRender.SetPosition(0, posList[i].transform.position);
+                    _lineRender.SetPosition(1, posList[i+1].transform.position);
+                    lineList.Add(lineObject);
+                }
+
+            }
+        }
     }
 
     public void SyncPathLocation()
@@ -48,25 +75,19 @@ public class PathHistoryVisual : MonoBehaviour
             GameObject qrCode = Instantiate(spawnIns, parentAnchor.transform.GetChild(2));
             qrCode.transform.localPosition = nd.pos;
             qrCode.transform.localRotation = nd.rot;
-            qrCode.transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = "Time: " + nd.timeAction + "\nAction: " + nd.actionType;
+            List<string> listTime = new List<string>(nd.timeAction.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries));
+            qrCode.transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = listTime[0] + "\n" + listTime[1];
             if (nd.devType == "QRcode")
             {
                 qrCode.GetComponent<MeshRenderer>().material.color = Color.green;
+                qrCode.transform.localScale = qrCode.transform.localScale * 1.3f;
             }
             else if (nd.devType == "Camera")
             {
                 qrCode.GetComponent<MeshRenderer>().material.color = Color.yellow;
             }
             
-            //set line render:
-            if (posList.Count > 0)
-            {
-                GameObject lineObject = Instantiate(linePath, parentAnchor.transform.GetChild(2));
-                LineRenderer _lineRender = lineObject.GetComponent<LineRenderer>();
-                _lineRender.SetPosition(0, posList[posList.Count - 1]);
-                _lineRender.SetPosition(1, qrCode.transform.position);
-            }
-            posList.Add(qrCode.transform.position);
+            posList.Add(qrCode);
             posOrigin = nd.posWorld;
         }
     }
@@ -80,6 +101,8 @@ public class PathHistoryVisual : MonoBehaviour
             {
                 Destroy(go);
             }
+            lineList = new List<GameObject>();
+            posList = new List<GameObject>();
         }
 
     }
