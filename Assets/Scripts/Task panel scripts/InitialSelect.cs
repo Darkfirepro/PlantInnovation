@@ -69,6 +69,7 @@ public class InitialSelect : MonoBehaviour
                 t.GetComponent<ManipulationHandler>().enabled = trigger;
                 t.GetComponent<BoundingBox>().enabled = trigger;
                 t.GetChild(0).gameObject.SetActive(trigger);
+                t.GetChild(1).GetComponent<MeshRenderer>().enabled = trigger;
             }
         }
     }

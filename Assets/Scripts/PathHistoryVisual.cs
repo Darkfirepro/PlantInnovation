@@ -8,11 +8,13 @@ public class PathHistoryVisual : MonoBehaviour
 {
     TCPClientReceive tCP;
     public GameObject spawnIns;
+    public GameObject arrowIns;
     Vector3 posOrigin = new Vector3(0, 0, 0);
     public GameObject linePath;
     List<GameObject> posList = new List<GameObject>();
     float originTime;
     List<GameObject> lineList = new List<GameObject>();
+    GameObject qrCode;
 
 
     // Start is called before the first frame update
@@ -72,7 +74,9 @@ public class PathHistoryVisual : MonoBehaviour
         if ((Vector3.Distance(nd.posWorld, posOrigin) > 0.5f) || (nd.devType == "QRcode"))
         {
             tCP.SocketSendByte(new SendMsg("start to spawn object location"));
-            GameObject qrCode = Instantiate(spawnIns, parentAnchor.transform.GetChild(2));
+            
+            if (nd.actionType == "Complete Moving") qrCode = Instantiate(spawnIns, parentAnchor.transform.GetChild(2));
+            else qrCode = Instantiate(arrowIns, parentAnchor.transform.GetChild(2));
             qrCode.transform.localPosition = nd.pos;
             qrCode.transform.localRotation = nd.rot;
             List<string> listTime = new List<string>(nd.timeAction.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries));
