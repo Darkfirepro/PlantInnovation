@@ -24,4 +24,9 @@ public class AddAnchor : MonoBehaviour
         GameObject syncAnchor = GameObject.Find("SyncAnchor");
         syncAnchor.GetComponent<WorldAnchorOperation>().watb.AddWorldAnchor(transform.parent.name, wa);
     }
+
+    public void RemoveAnchorObject()
+    {
+
+    }
 }
