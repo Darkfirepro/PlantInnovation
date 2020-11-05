@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
+    <ImageTarget name="qrcode_final" size="0.062000 0.062000" />
     <ImageTarget name="ImageFeature" size="0.057000 0.042005" />
     <ImageTarget name="CSIRO_Lab" size="210.000000 143.760330" />
     <ImageTarget name="14_GC03R" size="0.055000 0.053902" />

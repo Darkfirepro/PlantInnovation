@@ -17,7 +17,6 @@ public class WorldAnchorOperation : MonoBehaviour
     public enum Selection { CreateNew, SycnDirectly};
     public Selection Choice;
     [HideInInspector]
-    public WorldAnchorTransferBatch watb;
     public GameObject anchorObjPrefab;
     public GameObject anchorSetControl;
     private byte[] exportedData;
@@ -34,21 +33,17 @@ public class WorldAnchorOperation : MonoBehaviour
 
     byte[] anchorDataRecv;
 
-    //world anchor unity web request:
-    public string anchorStoreHost = "https://ie.csiro.au/services/dan-test-server/v1/api/spaces/";
-    private string spaceIdWeb = "Dan";
-    const string ANCHOR_STORE = "anchors/";
-    const string ANCHOR_DATA = "data/";
+    //public List<AnchorAdd> anchorList = new List<AnchorAdd>();
 
 
     // Start is called before the first frame update
     void Start()
     {
-        watb = new WorldAnchorTransferBatch();
         tCP = GameObject.Find("NetworkTransfer").GetComponent<TCPClientReceive>();
         spaceId = GameObject.FindGameObjectWithTag("SpaceNameObject").GetComponent<ImageTargetBehaviour>().TrackableName;
         dropValue = dropDownMenu.options[dropDownMenu.value].text;
         bytePath = Path.Combine(Application.persistentDataPath, dropValue);
+        indicator.GetComponent<MeshRenderer>().material.color = Color.green;
     }
 
     // Update is called once per frame
@@ -60,8 +55,14 @@ public class WorldAnchorOperation : MonoBehaviour
 
     public void PressAndGenerate()
     {
-        if (Choice == Selection.CreateNew)
+        if ((anchorSetControl.transform.childCount > 0) & (indicator.GetComponent<MeshRenderer>().material.color != Color.yellow))
         {
+            WorldAnchorTransferBatch watb = new WorldAnchorTransferBatch();
+
+            foreach (Transform a in anchorSetControl.transform)
+            {
+                watb.AddWorldAnchor(a.name, a.GetComponent<WorldAnchor>());
+            }
             exportedData = new byte[0];
             e = new List<byte>();
             indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
@@ -77,9 +78,9 @@ public class WorldAnchorOperation : MonoBehaviour
 
                     if (reason == SerializationCompletionReason.Succeeded)
                     {
-                        //tCP.SendWorlAnchor(e.ToArray());
-                        //CreateNewAnchorInManager();
-                        if (File.Exists(bytePath))
+                    //tCP.SendWorlAnchor(e.ToArray());
+                    //CreateNewAnchorInManager();
+                    if (File.Exists(bytePath))
                         {
                             File.Delete(bytePath);
                         }
@@ -101,34 +102,16 @@ public class WorldAnchorOperation : MonoBehaviour
         }
     }
 
-    public void SyncAnchor()
-    {
-        indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
-        AnchorRequire ar = new AnchorRequire(spaceId);
-        tCP.SocketSendByte(ar);
-    }
-
-    public void ImportAnchor()
-    {
-        if (indicator.GetComponent<MeshRenderer>().material.color != Color.green)
-        {
-            indicator.GetComponent<MeshRenderer>().material.color = Color.blue;
-            tCP.SocketSendByte(new SendMsg("start to import world anchor"));
-            anchorDataRecv = tCP.anchorData;
-            WorldAnchorTransferBatch.ImportAsync(anchorDataRecv, OnImportComplete);
-        }
-    }
-
     public void ImportAnchorWithReadingBytes()
     {
-        //TextAsset asset = Resources.Load("wa_data") as TextAsset;
-        //tCP.SocketSendByte(new SendMsg("start to import world anchor"));
-        //anchorDataRecv = asset.bytes;
-        //WorldAnchorTransferBatch.ImportAsync(anchorDataRecv, OnImportComplete);
-        tCP.SocketSendByte(new SendMsg("start to read world anchor from local anchor data"));
-        anchorDataRecv = File.ReadAllBytes(bytePath);
-        tCP.SocketSendByte(new SendMsg("start to import world anchor from local anchor data"));
-        WorldAnchorTransferBatch.ImportAsync(anchorDataRecv, OnImportComplete);
+        if (File.Exists(bytePath) & indicator.GetComponent<MeshRenderer>().material.color != Color.yellow)
+        {
+            tCP.SocketSendByte(new SendMsg("start to read world anchor from local anchor data"));
+            anchorDataRecv = File.ReadAllBytes(bytePath);
+            tCP.SocketSendByte(new SendMsg("start to import world anchor from local anchor data"));
+            indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
+            WorldAnchorTransferBatch.ImportAsync(anchorDataRecv, OnImportComplete);
+        }
     }
 
 
@@ -167,18 +150,19 @@ public class WorldAnchorOperation : MonoBehaviour
                 GameObject anchorObj = GameObject.Find(anid);
                 if (anchorObj != null)
                 {
+                    if (anchorObj.GetComponent<WorldAnchor>() != null) Destroy(anchorObj.GetComponent<WorldAnchor>());
                     deserializedTransferBatch.LockObject(anid, anchorObj);
                 }
                 else
                 {
                     GameObject ins = Instantiate(anchorObjPrefab, anchorSetControl.transform);
                     ins.name = anid;
+                    if (ins.GetComponent<WorldAnchor>() != null) Destroy(ins.GetComponent<WorldAnchor>());
                     deserializedTransferBatch.LockObject(anid, ins);
                 }
             }
-            GameObject syncAnchor = GameObject.Find("SyncAnchor");
-            syncAnchor.GetComponent<WorldAnchorOperation>().watb = deserializedTransferBatch;
             indicator.GetComponent<MeshRenderer>().material.color = Color.green;
+            GameObject.FindGameObjectWithTag("AnchorNumber").GetComponent<TextMeshPro>().text = anchorSetControl.transform.childCount.ToString();
         }
         else
         {
@@ -186,17 +170,4 @@ public class WorldAnchorOperation : MonoBehaviour
             indicator.GetComponent<MeshRenderer>().material.color = Color.red;
         }
     }
-
-    public void DownloadAnchor(string id)
-    {
-        indicator.GetComponent<MeshRenderer>().material.color = Color.yellow;
-        AnchorRequire ar = new AnchorRequire(id);
-        tCP.SocketSendByte(ar);
-    }
-
-
-
-
-
-
 }

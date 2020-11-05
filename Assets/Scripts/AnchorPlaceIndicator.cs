@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class AnchorPlaceIndicator : MonoBehaviour
 {
-    public Image indicator;
+    public GameObject indicator;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,16 +19,16 @@ public class AnchorPlaceIndicator : MonoBehaviour
         GameObject _anchor = GetComponent<AnchorAttachName>().anchorObject;
         if (_anchor == null)
         {
-            indicator.color = Color.white;
+            indicator.GetComponent<MeshRenderer>().material.color = Color.green;
             return;
         }
         if (Vector3.Distance(_camera.transform.position, _anchor.transform.position) < 3.0f)
         {
-            indicator.color = Color.red;
+            indicator.GetComponent<MeshRenderer>().material.color = Color.red;
         }
         else
         {
-            indicator.color = Color.green;
+            indicator.GetComponent<MeshRenderer>().material.color = Color.green;
         }
     }
 }

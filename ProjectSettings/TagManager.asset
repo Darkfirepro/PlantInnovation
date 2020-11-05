@@ -21,6 +21,7 @@ TagManager:
   - SyncAnchor
   - path_obj
   - AnchorParent
+  - AnchorNumber
   layers:
   - Default
   - TransparentFX

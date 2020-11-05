@@ -1,32 +1,40 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.XR.WSA;
 using UnityEngine.XR.WSA.Sharing;
 
 public class AddAnchor : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    AnchorAdd an;
+    public TextMeshPro anchorNum;
 
-    // Update is called once per frame
-    void Update()
+    public void Start()
     {
-        
+        anchorNum = GameObject.FindGameObjectWithTag("AnchorNumber").GetComponent<TextMeshPro>();
+        PutAnchorOnObject();
     }
 
     public void PutAnchorOnObject()
     {
-        WorldAnchor wa = transform.parent.gameObject.AddComponent<WorldAnchor>();
-        GameObject syncAnchor = GameObject.Find("SyncAnchor");
-        syncAnchor.GetComponent<WorldAnchorOperation>().watb.AddWorldAnchor(transform.parent.name, wa);
+        if (transform.parent.gameObject.GetComponent<WorldAnchor>() == null)
+        {
+            WorldAnchor wa = transform.parent.gameObject.AddComponent<WorldAnchor>();
+        }
     }
 
     public void RemoveAnchorObject()
     {
+        if (transform.parent.gameObject.GetComponent<WorldAnchor>() != null)
+        {
+            Destroy(transform.parent.gameObject.GetComponent<WorldAnchor>());
+        }
+    }
 
+    public void DeleteAnchorObject()
+    {
+        anchorNum.text = (int.Parse(anchorNum.text) - 1).ToString();
+        Destroy(transform.parent.gameObject);
     }
 }

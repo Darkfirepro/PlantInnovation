@@ -14,6 +14,9 @@ public class PathHistoryVisual : MonoBehaviour
     List<GameObject> posList = new List<GameObject>();
     float originTime;
     List<GameObject> lineList = new List<GameObject>();
+    public GameObject queryIndicator;
+
+    public GameObject finalLocationCanvas;
 
 
     // Start is called before the first frame update
@@ -54,7 +57,12 @@ public class PathHistoryVisual : MonoBehaviour
 
     public void SyncPathLocation()
     {
-        tCP.SocketSendByte(new SendMsg("SyncLocation"));
+        if (queryIndicator.GetComponent<MeshRenderer>().material.color == Color.green)
+        {
+            tCP.SocketSendByte(new SendMsg("SyncLocation"));
+            finalLocationCanvas.SetActive(true);
+
+        }
     }
 
     public void SpawnObj(NavigationData nd)
@@ -82,7 +90,7 @@ public class PathHistoryVisual : MonoBehaviour
             qrCode.transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>().text = listTime[0] + "\n" + listTime[1];
             if (nd.devType == "QRcode")
             {
-                qrCode.GetComponent<MeshRenderer>().material.color = Color.green;
+                if (qrCode.GetComponent<MeshRenderer>() != null) qrCode.GetComponent<MeshRenderer>().material.color = Color.green;
                 qrCode.transform.localScale = qrCode.transform.localScale * 1.3f;
             }
             else if (nd.devType == "Camera")

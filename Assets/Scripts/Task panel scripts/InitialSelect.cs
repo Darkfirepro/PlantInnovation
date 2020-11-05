@@ -13,8 +13,13 @@ public class InitialSelect : MonoBehaviour
     public GameObject anchorParent;
     public TextMeshPro modeText;
     public string writeIn;
+    public GameObject userTips;
     public TextMeshPro trackingTips;
     public GameObject trackingAsset;
+    //public GameObject finalLocationCanvas;
+    public GameObject trackingIndicator;
+    //public TextMeshPro queryTips;
+    public GameObject queryIndicator;
     // Start is called before the first frame update
 
     public void ShowSync()
@@ -54,6 +59,7 @@ public class InitialSelect : MonoBehaviour
         plantMap.SetActive(true);
         gameObject.SetActive(false);
         ShowHideAnchor(false);
+        queryModeIndicator();
     }
 
     public void ClosePantMap()
@@ -65,11 +71,24 @@ public class InitialSelect : MonoBehaviour
 
     void Start()
     {
-        GameObject userTips = GameObject.FindGameObjectWithTag("AssistantTips");
-        string tips = "AR IPS V1.0" + "\nPlease synchronizing you system first";
-        userTips.GetComponent<TextMeshPro>().text = tips;
         trackingAsset.SetActive(false);
     }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (anchorParent.transform.childCount == 0)
+        {
+            string tips = "AR IPS V1.0" + "\nPlease author you space in Authroing mode!";
+            userTips.GetComponent<TextMeshPro>().text = tips;
+        }
+        else
+        {
+            string tips = "AR IPS V1.0" + "\nSpace has been authored!";
+            userTips.GetComponent<TextMeshPro>().text = tips;
+        }
+    }
+
 
     public void ShowHideAnchor(bool trigger)
     {
@@ -92,16 +111,28 @@ public class InitialSelect : MonoBehaviour
         {
             trackingTips.text = "Space has been authored, please start tracking your item!";
             trackingAsset.SetActive(true);
+            trackingIndicator.GetComponent<MeshRenderer>().material.color = Color.green;
         }
         else
         {
             trackingTips.text = "Please firstly author your space with spatial anchors!";
+            trackingIndicator.GetComponent<MeshRenderer>().material.color = Color.red;
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void queryModeIndicator()
     {
-        
+        if (anchorParent.transform.childCount > 0)
+        {
+            queryIndicator.GetComponent<MeshRenderer>().material.color = Color.green;
+        }
+        else
+        {
+            queryIndicator.GetComponent<MeshRenderer>().material.color = Color.red;
+            ClosePantMap();
+            ShowMainTool();
+        }
     }
+
+
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.XR.WSA;
 
 [Serializable]
 public class PlantSet
@@ -88,6 +89,19 @@ public class AnchorInfo
         header = "AnchorInfo";
         anchorName = _name;
         anchorPos = _pos;
+    }
+}
+
+[Serializable]
+public class AnchorAdd
+{
+    public string anchorName;
+    public WorldAnchor anchor;
+
+    public AnchorAdd(string _name, WorldAnchor _anchor)
+    {
+        anchorName = _name;
+        anchor = _anchor;
     }
 }
 
