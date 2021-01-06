@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class SendCamPos : MonoBehaviour
@@ -8,6 +9,8 @@ public class SendCamPos : MonoBehaviour
     public bool trigger = false;
     private float timeCurrent;
     public TCPClientReceive tcp;
+    string triggetCamType = "Camera";
+    public TextMeshProUGUI qrCodeTimeText;
 
     // Start is called before the first frame update
     void Start()
@@ -27,13 +30,20 @@ public class SendCamPos : MonoBehaviour
 
                 Quaternion rot = new Quaternion(0, 0, 0, 0);
                 string anchorName = anobi.transform.parent.name;
-
-                NavigationData dataSend = new NavigationData("Camera", pos, cam.transform.position, rot, anchorName, 
+                NavigationData dataSend = new NavigationData(triggetCamType, pos, rot, anchorName, 
                     System.DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), "Moving to");
                 tcp.SocketSendByte(dataSend);
                 timeCurrent = Time.time;
+                triggetCamType = "Camera";
             }
 
         }
     }
+
+    public void FoundCameraType()
+    {
+        triggetCamType = "QRcode";
+        qrCodeTimeText.text = System.DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+    }
+
 }

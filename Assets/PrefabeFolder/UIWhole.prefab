@@ -1886,7 +1886,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2551330273649311412
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4026,7 +4026,7 @@ PrefabInstance:
     - target: {fileID: 8018669433260791325, guid: 4e04203928d622d45945365c1d9be4cf,
         type: 3}
       propertyPath: VoiceCommand
-      value: OK
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8053163853916978769, guid: 4e04203928d622d45945365c1d9be4cf,
         type: 3}

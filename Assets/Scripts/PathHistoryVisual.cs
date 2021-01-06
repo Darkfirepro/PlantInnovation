@@ -17,13 +17,14 @@ public class PathHistoryVisual : MonoBehaviour
     public GameObject queryIndicator;
 
     public GameObject finalLocationCanvas;
-
+    GameObject refObj;
 
     // Start is called before the first frame update
     void Start()
     {
         tCP = GameObject.Find("NetworkTransfer").GetComponent<TCPClientReceive>();
         originTime = Time.time;
+        refObj = new GameObject();
     }
 
     // Update is called once per frame
@@ -74,11 +75,16 @@ public class PathHistoryVisual : MonoBehaviour
             return;
         }
 
+        //initial prepare on position test:
+        refObj.transform.parent = parentAnchor.transform.GetChild(2);
+        refObj.transform.localPosition = nd.pos;
+
         if (posOrigin == new Vector3(0, 0, 0))
         {
-            posOrigin = nd.posWorld;
+            posOrigin = refObj.transform.position;
         }
-        if ((Vector3.Distance(nd.posWorld, posOrigin) > 0.5f) || (nd.devType == "QRcode"))
+
+        if ((Vector3.Distance(refObj.transform.position, posOrigin) > 0.5f) || (nd.devType == "QRcode"))
         {
             tCP.SocketSendByte(new SendMsg("start to spawn object location"));
             GameObject qrCode;
@@ -99,7 +105,7 @@ public class PathHistoryVisual : MonoBehaviour
             }
             
             posList.Add(qrCode);
-            posOrigin = nd.posWorld;
+            posOrigin = refObj.transform.position;
         }
     }
 
